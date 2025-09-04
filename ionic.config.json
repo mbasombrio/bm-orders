@@ -1,0 +1,7 @@
+{
+  "name": "bm-orders",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
