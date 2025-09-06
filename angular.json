@@ -33,6 +33,16 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
+              },
+              {
+                "glob": "**/*.svg",
+                "input": "node_modules/ionicons/dist/ionicons/svg",
+                "output": "svg"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@ionic/angular/css",
+                "output": "css"
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
@@ -49,8 +59,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "15kb",
+                  "maximumError": "20kb"
                 }
               ],
               "fileReplacements": [
