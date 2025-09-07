@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonItem, IonLabel, IonList, IonMenuButton, IonSearchbar, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Article } from 'src/app/models/article';
 import { Customer } from 'src/app/models/customer';
 import { SqliteArticlesService } from 'src/app/services/sqlite-articles.service';
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
 import { ArticleSearchResultModalComponent } from './article-search-result-modal.component';
-import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonCard, IonCardContent, IonItem, IonSelect, IonSelectOption, IonSearchbar, IonButton, IonCardHeader, IonCardTitle, IonList, IonLabel } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-add-order',
@@ -35,7 +35,8 @@ import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent,
     IonCardTitle,
     IonList,
     IonLabel
-  ]
+  ],
+  providers: [ModalController]
 })
 export class AddOrderPage implements OnInit {
 
@@ -43,11 +44,11 @@ export class AddOrderPage implements OnInit {
   searchQuery: string = '';
   orderItems: { article: Article, quantity: number }[] = [];
 
+  modalController = inject(ModalController)
   constructor(
     private sqliteClientsService: SqliteClientsService,
     private sqliteArticlesService: SqliteArticlesService,
     private alertController: AlertController,
-    private modalController: ModalController
   ) { }
 
   ngOnInit() {

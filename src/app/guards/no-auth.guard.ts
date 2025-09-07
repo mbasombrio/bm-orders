@@ -7,7 +7,7 @@ export const noAuthGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const token = localStorage.getItem(authService.TOKEN_KEY);
   if (token) {
-     router.navigate(['/dashboard']);
+     router.navigate(['/home']);
     return false;
   } else {
     // Redirigir al login si no está autenticado

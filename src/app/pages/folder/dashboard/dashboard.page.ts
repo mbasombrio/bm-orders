@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
+import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonRouterOutlet, IonSplitPane } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { appsOutline, appsSharp, bugOutline, bugSharp, cartOutline, cartSharp, cubeOutline, cubeSharp, logOutOutline, logOutSharp } from 'ionicons/icons';
 import { AuthStateService } from 'src/app/services/auth-state.service';
 import { environment } from 'src/environments/environment';
 
@@ -13,20 +15,22 @@ import { environment } from 'src/environments/environment';
   standalone: true,
   imports: [
     CommonModule,
-    IonicModule,
-    RouterModule
+    RouterModule,
+    IonSplitPane,
+    IonMenu,
+    IonContent,
+    IonList,
+    IonMenuToggle,
+    IonItem,
+    IonIcon,
+    IonLabel,
+    IonRouterOutlet
   ]
 })
 export class DashboardPage implements OnInit {
   currentYear = new Date().getFullYear();
   environment = environment;
 
-  // Páginas del menú sidebar
-  public appPages = [
-    { title: 'Dashboard', url: '/dashboard', icon: 'apps' },
-    { title: 'Pedidos', url: '/dashboard/orders', icon: 'cart' },
-    { title: 'Datos', url: '/dashboard/data', icon: 'cube' },
-  ];
 
   get displayClient(): string {
     if (environment.useMultiClient) {
@@ -40,7 +44,9 @@ export class DashboardPage implements OnInit {
   constructor(
     private router: Router,
     private authStateService: AuthStateService
-  ) { }
+  ) {
+    addIcons({ appsOutline, appsSharp, cartOutline, cartSharp, cubeOutline, cubeSharp, logOutOutline, logOutSharp, bugOutline, bugSharp });
+  }
 
   ngOnInit() {
 

@@ -3,10 +3,10 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 
+import { IonButton, IonButtons, IonCard, IonCardContent, IonChip, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Subscription } from 'rxjs';
 import { BasketOrder } from 'src/app/models/basket-order';
 import { SqliteOrdersService } from 'src/app/services/sqlite-orders.service';
-import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonButton, IonIcon, IonContent, IonCard, IonCardContent, IonList, IonItemSliding, IonItem, IonLabel, IonChip, IonItemOptions, IonItemOption, IonFab, IonFabButton } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-orders',
@@ -413,6 +413,6 @@ export class OrdersPage implements OnInit, OnDestroy {
   }
 
   addNewOrder() {
-    this.router.navigate(['/dashboard/add-order']);
+    this.router.navigate(['add-order']);
   }
 }
