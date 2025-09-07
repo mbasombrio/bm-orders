@@ -1,5 +1,5 @@
 <ion-app>
-  <ion-menu content-id="main-content">
+  <ion-menu content-id="main-content" [disabled]="isLoginPage">
     <ion-header>
       <ion-toolbar>
         <ion-title>Menu</ion-title>
@@ -19,7 +19,7 @@
 
       <ion-list>
         <ion-menu-toggle auto-hide="false">
-          <ion-item (click)="logout()">
+          <ion-item (click)="logout()" style="cursor: pointer;">
             <ion-icon slot="start" name="log-out-outline"></ion-icon>
             <ion-label>
               Cerrar Sesión
