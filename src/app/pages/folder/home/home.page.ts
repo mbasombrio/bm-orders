@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { chevronForwardOutline, chevronForwardSharp, cubeOutline, cubeSharp, receiptOutline, receiptSharp } from 'ionicons/icons';
+import { arrowForwardSharp, chevronForwardOutline, chevronForwardSharp, cubeOutline, cubeSharp, receiptOutline, receiptSharp } from 'ionicons/icons';
 import { Article } from 'src/app/models/article';
 import { environment } from 'src/environments/environment';
 
@@ -40,7 +40,7 @@ export class HomePage {
   recentArticles: Article[] = [];
 
   constructor() {
-    addIcons({ receiptOutline, receiptSharp, chevronForwardOutline, chevronForwardSharp, cubeOutline, cubeSharp });
+    addIcons({ receiptOutline, receiptSharp, chevronForwardOutline, chevronForwardSharp, cubeOutline, cubeSharp, arrowForwardSharp });
   }
 
   get displayClient(): string {

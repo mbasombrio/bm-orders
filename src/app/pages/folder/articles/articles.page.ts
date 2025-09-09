@@ -2,6 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonMenuButton, IonProgressBar, IonSpinner, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { addSharp, alertCircleSharp, checkmarkCircleSharp, informationCircleSharp, peopleSharp } from 'ionicons/icons';
 import { Article } from 'src/app/models/article';
 import { Customer } from 'src/app/models/customer';
 import { ResponseDTO } from 'src/app/models/response';
@@ -9,8 +12,6 @@ import { ClientsService } from 'src/app/services/clients.service';
 import { ItemsService } from 'src/app/services/items.service';
 import { SqliteArticlesService } from 'src/app/services/sqlite-articles.service';
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
-import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonSpinner, IonIcon, IonProgressBar } from '@ionic/angular/standalone';
-
 
 @Component({
   selector: 'app-articles',
@@ -46,35 +47,44 @@ export class ArticlesPage {
   toastController = inject(ToastController);
   alertController = inject(AlertController);
 
-  constructor() {}
+  constructor() {
+    addIcons({
+      'people-sharp': peopleSharp,
+      'information-circle-sharp': informationCircleSharp,
+      'add-sharp': addSharp,
+      'checkmark-circle-sharp': checkmarkCircleSharp,
+      'alert-circle-sharp': alertCircleSharp
+    });
+  }
 
   async importClients() {
     this.isLoading.set(true);
     this.loadingMessage.set('Importando clientes...');
 
-    const loadingToast = await this.toastController.create({
-      message: 'Esta operación puede tardar unos minutos debido a la cantidad de clientes',
-      duration: 5000,
-      position: 'top',
-      color: 'primary',
-      icon: 'information-circle'
-    });
-    await loadingToast.present();
+    let loadingAlert: HTMLIonAlertElement | null = null;
+    try {
+      loadingAlert = await this.alertController.create({
+        header: 'Importando...', 
+        message: 'Esta operación puede tardar unos minutos.',
+        buttons: []
+      });
+      await loadingAlert.present();
+    } catch (e: any) {
+      console.error('Could not create loading alert', e);
+    }
 
     this.clientsService.getCustomers().subscribe({
       next: async (response: ResponseDTO<Customer>) => {
+        await loadingAlert?.dismiss();
         console.log('Clients imported successfully:', response.rows);
         this.loadingMessage.set('Guardando clientes en base de datos local...');
 
         try {
-
           if (response.rows.length === 0) {
               await this.showSuccessToast(`No se encontraron clientes para importar.`);
               this.isLoading.set(false);
           } else {
-
             const saveResult = await this.sqliteClientsService.replaceAllClients(response.rows);
-
             this.isLoading.set(false);
             this.loadingMessage.set('Importando clientes...');
 
@@ -92,15 +102,15 @@ export class ArticlesPage {
           this.isLoading.set(false);
           this.loadingMessage.set('Importando clientes...');
           console.error('Error updating clients database:', error);
-          await this.showErrorAlert('Error al actualizar base de datos de clientes', error);
+          await this.showErrorAlert('Error al actualizar base de datos de clientes', error, () => this.importClients());
         }
       },
       error: async (error) => {
+        await loadingAlert?.dismiss();
         this.isLoading.set(false);
         this.loadingMessage.set('Importando clientes...');
         console.error('Import error:', error);
-
-        await this.showErrorAlert('Error al importar clientes', error);
+        await this.showErrorAlert('Error al importar clientes', error, () => this.importClients());
       }
     });
   }
@@ -109,52 +119,50 @@ export class ArticlesPage {
     this.isLoading.set(true);
     this.loadingMessage.set('Conectando con el servidor...');
 
-    // Mostrar toast informativo para operaciones largas
-    const loadingToast = await this.toastController.create({
-      message: 'Esta operación puede tardar unos minutos debido a la cantidad de artículos',
-      duration: 5000,
-      position: 'top',
-      color: 'primary',
-      icon: 'information-circle'
-    });
-    await loadingToast.present();
+    let loadingAlert: HTMLIonAlertElement | null = null;
+    try {
+      loadingAlert = await this.alertController.create({
+        header: 'Importando...', 
+        message: 'Esta operación puede tardar unos minutos.',
+        buttons: []
+      });
+      await loadingAlert.present();
+    } catch (e: any) {
+      console.error('Could not create loading alert', e);
+    }
 
     this.itemsService.getArticles().subscribe({
       next: async (response: Article[]) => {
+        await loadingAlert?.dismiss();
         console.log('Articles imported successfully:', response);
         this.loadingMessage.set('Guardando artículos en base de datos local...');
 
         try {
-          // Operación atómica: limpiar y guardar en una sola transacción
           const saveResult = await this.sqliteArticlesService.replaceAllArticles(response);
-
           this.isLoading.set(false);
           this.loadingMessage.set('Importando artículos...');
 
           if (saveResult.errors.length > 0) {
-            // Algunos artículos fallaron
             await this.showWarningAlert(
               'Importación parcial',
               `${saveResult.success} artículos guardados exitosamente. ${saveResult.errors.length} errores encontrados.`, 
               saveResult.errors
             );
           } else {
-            // Todos los artículos se guardaron exitosamente
             await this.showSuccessToast(`Base de datos actualizada: ${saveResult.success} artículos importados exitosamente`);
           }
         } catch (error) {
           this.isLoading.set(false);
           this.loadingMessage.set('Importando artículos...');
           console.error('Error updating articles database:', error);
-          await this.showErrorAlert('Error al actualizar base de datos', error);
+          await this.showErrorAlert('Error al actualizar base de datos', error, () => this.importArticles());
         }
       },
       error: async (error) => {
+        await loadingAlert?.dismiss();
         this.isLoading.set(false);
         this.loadingMessage.set('Importando artículos...');
         console.error('Import error:', error);
-
-        // Mostrar mensaje de error mejorado
         await this.showImportErrorAlert(error);
       }
     });
@@ -166,23 +174,20 @@ export class ArticlesPage {
       duration: 3000,
       position: 'top',
       color: 'success',
-      icon: 'checkmark-circle'
+      icon: 'checkmark-circle-sharp'
     });
     await toast.present();
   }
 
-  private async showErrorAlert(title: string, error: any) {
-    const errorMessage = error?.error?.message || error?.message || 'Error desconocido';
-
+  private async showErrorAlert(title: string, error: any, retryFunction: () => void) {
+    const errorMessage = error?.message || error?.error?.message || 'Error desconocido';
     const alert = await this.alertController.create({
       header: title,
-      message: `Ha ocurrido un error al importar los artículos: ${errorMessage}`,
+      message: `Se produjo un error: ${errorMessage}`,
       buttons: [
         {
           text: 'Reintentar',
-          handler: () => {
-            this.importArticles();
-          }
+          handler: retryFunction
         },
         {
           text: 'Cerrar',
@@ -199,15 +204,14 @@ export class ArticlesPage {
       duration: 4000,
       position: 'top',
       color: 'danger',
-      icon: 'alert-circle'
+      icon: 'alert-circle-sharp'
     });
     await toast.present();
   }
 
   private async showWarningAlert(title: string, message: string, errors: string[]) {
-    const errorList = errors.slice(0, 5).join('\n'); // Mostrar solo los primeros 5 errores
+    const errorList = errors.slice(0, 5).join('\n');
     const moreErrors = errors.length > 5 ? `\n... y ${errors.length - 5} errores más` : '';
-
     const alert = await this.alertController.create({
       header: title,
       message: `${message}\n\nDetalles de errores:\n${errorList}${moreErrors}`,
@@ -230,7 +234,6 @@ export class ArticlesPage {
   private async showImportErrorAlert(error: any) {
     const errorMessage = error.message || 'Error desconocido';
     const isTimeoutError = errorMessage.includes('tardó demasiado') || errorMessage.includes('Tiempo de espera');
-
     const alert = await this.alertController.create({
       header: isTimeoutError ? 'Timeout en la importación' : 'Error de importación',
       message: errorMessage,
@@ -256,31 +259,22 @@ export class ArticlesPage {
     await alert.present();
   }
 
-  // Método alternativo para importación por lotes
   async importArticlesPaginated() {
     this.isLoading.set(true);
     this.loadingMessage.set('Importando artículos por lotes...');
-
     try {
-      // Limpiar artículos existentes primero
       await this.sqliteArticlesService.clearAllArticles();
-
       let allArticles: Article[] = [];
       let page = 0;
       let hasMore = true;
-
       while (hasMore) {
         this.loadingMessage.set(`Importando lote ${page + 1}...`);
-
         try {
           const batch = await this.itemsService.getArticlesPaginated(page, 500).toPromise();
-
           if (batch && batch.content) {
             allArticles.push(...batch.content);
             hasMore = !batch.last;
             page++;
-
-            // Guardar cada lote inmediatamente
             await this.sqliteArticlesService.saveMultipleArticles(batch.content);
           } else {
             hasMore = false;
@@ -288,7 +282,6 @@ export class ArticlesPage {
         } catch (batchError) {
           console.error(`Error en lote ${page + 1}:`, batchError);
           hasMore = false;
-
           if (allArticles.length > 0) {
             await this.showWarningAlert(
               'Importación interrumpida',
@@ -296,27 +289,23 @@ export class ArticlesPage {
               [`Error en lote ${page + 1}: ${batchError}`]
             );
           } else {
-            await this.showErrorAlert('Error en importación por lotes', batchError);
+            await this.showErrorAlert('Error en importación por lotes', batchError, () => this.importArticlesPaginated());
           }
         }
       }
-
       this.isLoading.set(false);
       this.loadingMessage.set('Importando artículos...');
-
       if (allArticles.length > 0) {
         await this.showSuccessToast(`Importación por lotes completada: ${allArticles.length} artículos importados`);
       }
-
     } catch (error) {
       this.isLoading.set(false);
       this.loadingMessage.set('Importando artículos...');
       console.error('Error in paginated import:', error);
-      await this.showErrorAlert('Error en importación por lotes', error);
+      await this.showErrorAlert('Error en importación por lotes', error, () => this.importArticlesPaginated());
     }
   }
 
-  // Recrear la base de datos manualmente
   async recreateDatabase() {
     const alert = await this.alertController.create({
       header: 'Recrear Base de Datos',
@@ -331,18 +320,16 @@ export class ArticlesPage {
           handler: async () => {
             this.isLoading.set(true);
             this.loadingMessage.set('Recreando base de datos...');
-
             try {
               await this.sqliteArticlesService.recreateDatabase();
               this.isLoading.set(false);
               this.loadingMessage.set('Importando artículos...');
-
               await this.showSuccessToast('Base de datos recreada exitosamente');
             } catch (error) {
               this.isLoading.set(false);
               this.loadingMessage.set('Importando artículos...');
               console.error('Error recreating database:', error);
-              await this.showErrorAlert('Error al recrear base de datos', error);
+              await this.showErrorAlert('Error al recrear base de datos', error, () => this.recreateDatabase());
             }
           }
         }
@@ -352,7 +339,6 @@ export class ArticlesPage {
     await alert.present();
   }
 
-  // Verificar estado de la base de datos
   async checkDatabaseStatus() {
     this.isLoading.set(true);
     this.loadingMessage.set('Verificando base de datos...');
@@ -394,7 +380,7 @@ Estado de la Base de Datos:
       this.isLoading.set(false);
       this.loadingMessage.set('Importando artículos...');
       console.error('Error checking database status:', error);
-      await this.showErrorAlert('Error al verificar base de datos', error);
+      await this.showErrorAlert('Error al verificar base de datos', error, () => this.checkDatabaseStatus());
     }
   }
 }
