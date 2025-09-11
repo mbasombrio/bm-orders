@@ -5,7 +5,7 @@ import { AlertController } from '@ionic/angular';
 
 import { IonButton, IonButtons, IonCard, IonCardContent, IonChip, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { addSharp } from 'ionicons/icons';
+import { addSharp, receiptOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { BasketOrder } from 'src/app/models/basket-order';
 import { SqliteOrdersService } from 'src/app/services/sqlite-orders.service';
@@ -57,7 +57,7 @@ export class OrdersPage implements OnInit, OnDestroy {
     private alertController: AlertController,
     private sqliteOrdersService: SqliteOrdersService
   ) {
-     addIcons({ addSharp})
+     addIcons({ addSharp, receiptOutline})
   }
 
   ngOnInit() {

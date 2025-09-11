@@ -11,8 +11,18 @@
   <ion-card>
     <ion-card-content>
       <ion-item>
-        <ion-select label="Cliente" label-placement="floating" placeholder="Seleccione un cliente">
-          <ion-select-option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }} {{ customer.lastName }}</ion-select-option>
+        <ion-select [(ngModel)]="selectedCustomerId" label="Cliente" label-placement="floating"
+          placeholder="Seleccione un cliente">
+          <ion-select-option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }} {{
+            customer.lastName }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-select [(ngModel)]="selectedBranchId" label="Sucursal" label-placement="floating"
+          placeholder="Seleccione una sucursal">
+          <ion-select-option *ngFor="let branch of branches" [value]="branch.id">{{ branch.businessName
+            }}</ion-select-option>
         </ion-select>
       </ion-item>
 
@@ -29,11 +39,17 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item *ngFor="let item of orderItems">
+        <ion-item *ngFor="let item of orderItems; let i = index">
           <ion-label>
             <h2>{{ item.article.name }}</h2>
-            <p>SKU: {{ item.article.sku }} | Cantidad: {{ item.quantity }}</p>
+            <p>SKU: {{ item.article.sku }}</p>
           </ion-label>
+          <div class="quantity-controls">
+            <ion-input type="number" [(ngModel)]="item.quantity" (ionChange)="updateQuantity(i)" min="1"></ion-input>
+          </div>
+          <ion-button color="danger" (click)="removeItem(i)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
         </ion-item>
         <ion-item *ngIf="orderItems.length === 0">
           <ion-label>No hay artículos en el pedido.</ion-label>
@@ -41,5 +57,8 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
+
+  <ion-button expand="full" (click)="saveOrder()" [disabled]="!selectedCustomerId || orderItems.length === 0">Guardar
+    Pedido</ion-button>
 
 </ion-content>

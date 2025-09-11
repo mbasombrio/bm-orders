@@ -4,14 +4,17 @@ import { FormsModule } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonMenuButton, IonProgressBar, IonSpinner, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { addSharp, alertCircleSharp, checkmarkCircleSharp, informationCircleSharp, peopleSharp } from 'ionicons/icons';
+import { addSharp, alertCircleSharp, businessSharp, checkmarkCircleSharp, informationCircleSharp, peopleSharp } from 'ionicons/icons';
 import { Article } from 'src/app/models/article';
+import { Branch } from 'src/app/models/branch';
 import { Customer } from 'src/app/models/customer';
 import { ResponseDTO } from 'src/app/models/response';
+import { User } from 'src/app/models/user';
 import { ClientsService } from 'src/app/services/clients.service';
 import { ItemsService } from 'src/app/services/items.service';
 import { SqliteArticlesService } from 'src/app/services/sqlite-articles.service';
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
+import { SqliteBranchService } from 'src/app/services/sqllite-branch.service';
 
 @Component({
   selector: 'app-articles',
@@ -42,8 +45,9 @@ export class ArticlesPage {
   loadingMessage = signal<string>('Importando artículos...');
   itemsService = inject(ItemsService);
   sqliteArticlesService = inject(SqliteArticlesService);
-  clientsService = inject(ClientsService);
   sqliteClientsService = inject(SqliteClientsService);
+  sqliteBranches = inject(SqliteBranchService);
+  clientsService = inject(ClientsService);
   toastController = inject(ToastController);
   alertController = inject(AlertController);
 
@@ -53,7 +57,8 @@ export class ArticlesPage {
       'information-circle-sharp': informationCircleSharp,
       'add-sharp': addSharp,
       'checkmark-circle-sharp': checkmarkCircleSharp,
-      'alert-circle-sharp': alertCircleSharp
+      'alert-circle-sharp': alertCircleSharp,
+      'business-sharp': businessSharp
     });
   }
 
@@ -64,7 +69,7 @@ export class ArticlesPage {
     let loadingAlert: HTMLIonAlertElement | null = null;
     try {
       loadingAlert = await this.alertController.create({
-        header: 'Importando...', 
+        header: 'Importando...',
         message: 'Esta operación puede tardar unos minutos.',
         buttons: []
       });
@@ -81,8 +86,8 @@ export class ArticlesPage {
 
         try {
           if (response.rows.length === 0) {
-              await this.showSuccessToast(`No se encontraron clientes para importar.`);
-              this.isLoading.set(false);
+            await this.showSuccessToast(`No se encontraron clientes para importar.`);
+            this.isLoading.set(false);
           } else {
             const saveResult = await this.sqliteClientsService.replaceAllClients(response.rows);
             this.isLoading.set(false);
@@ -91,7 +96,7 @@ export class ArticlesPage {
             if (saveResult.errors.length > 0) {
               await this.showWarningAlert(
                 'Importación parcial de clientes',
-                `${saveResult.success} clientes guardados exitosamente. ${saveResult.errors.length} errores encontrados.`, 
+                `${saveResult.success} clientes guardados exitosamente. ${saveResult.errors.length} errores encontrados.`,
                 saveResult.errors
               );
             } else {
@@ -117,12 +122,11 @@ export class ArticlesPage {
 
   async importArticles() {
     this.isLoading.set(true);
-    this.loadingMessage.set('Conectando con el servidor...');
 
     let loadingAlert: HTMLIonAlertElement | null = null;
     try {
       loadingAlert = await this.alertController.create({
-        header: 'Importando...', 
+        header: 'Importando...',
         message: 'Esta operación puede tardar unos minutos.',
         buttons: []
       });
@@ -145,7 +149,7 @@ export class ArticlesPage {
           if (saveResult.errors.length > 0) {
             await this.showWarningAlert(
               'Importación parcial',
-              `${saveResult.success} artículos guardados exitosamente. ${saveResult.errors.length} errores encontrados.`, 
+              `${saveResult.success} artículos guardados exitosamente. ${saveResult.errors.length} errores encontrados.`,
               saveResult.errors
             );
           } else {
@@ -198,16 +202,6 @@ export class ArticlesPage {
     await alert.present();
   }
 
-  private async showErrorToast(message: string) {
-    const toast = await this.toastController.create({
-      message: message,
-      duration: 4000,
-      position: 'top',
-      color: 'danger',
-      icon: 'alert-circle-sharp'
-    });
-    await toast.present();
-  }
 
   private async showWarningAlert(title: string, message: string, errors: string[]) {
     const errorList = errors.slice(0, 5).join('\n');
@@ -339,48 +333,53 @@ export class ArticlesPage {
     await alert.present();
   }
 
-  async checkDatabaseStatus() {
+  async importBranches() {
     this.isLoading.set(true);
-    this.loadingMessage.set('Verificando base de datos...');
-
+    this.loadingMessage.set('Importando sucursales...');
     try {
-      const status = await this.sqliteArticlesService.checkDatabaseHealth();
-      const articlesCount = status.hasStore ? await this.sqliteArticlesService.getArticlesCount() : 0;
 
-      this.isLoading.set(false);
-      this.loadingMessage.set('Importando artículos...');
+      const user = localStorage.getItem('identity');
+      if (user) {
+        const identity: User = JSON.parse(user);
+        const branches: Branch[] = identity.branches;
+        const saveResult = await this.sqliteBranches.replaceAllbranches(branches);
+        this.isLoading.set(false);
+        this.loadingMessage.set('Importando clientes...');
 
-      const statusMessage = `
-Estado de la Base de Datos:
-• Existe: ${status.exists ? '✅ Sí' : '❌ No'}
-• Tiene tabla de artículos: ${status.hasStore ? '✅ Sí' : '❌ No'}
-• Versión: ${status.version}
-• Artículos almacenados: ${articlesCount}
-      `;
+        if (saveResult.errors.length > 0) {
+          await this.showWarningAlert(
+            'Importación parcial de sucursales',
+            `${saveResult.success} sucursales guardados exitosamente. ${saveResult.errors.length} errores encontrados.`,
+            saveResult.errors
+          );
+        } else {
+          await this.showSuccessToast(`Base de datos actualizada: ${saveResult.success} sucursales importados exitosamente`);
+        }
 
-      const alert = await this.alertController.create({
-        header: 'Estado de la Base de Datos',
-        message: statusMessage.trim(),
-        buttons: [
-          {
-            text: 'Aceptar'
-          },
-          ...((!status.exists || !status.hasStore) ? [{
-            text: 'Recrear DB',
-            handler: () => {
-              this.recreateDatabase();
+      } else {
+        const alert = await this.alertController.create({
+          header: "Error",
+          message: `No se encontraron sucursales para el usuario`,
+          buttons: [
+            {
+              text: 'Cerrar',
+              role: 'cancel'
             }
-          }] : [])
-        ]
-      });
-
-      await alert.present();
+          ]
+        });
+        await alert.present();
+      }
+      this.isLoading.set(false);
 
     } catch (error) {
       this.isLoading.set(false);
-      this.loadingMessage.set('Importando artículos...');
-      console.error('Error checking database status:', error);
-      await this.showErrorAlert('Error al verificar base de datos', error, () => this.checkDatabaseStatus());
+      this.loadingMessage.set('Importando sucursales...');
+      console.error('Error updating sucursales:', error);
+      await this.showErrorAlert('Error al actualizar datos de sucursales', error, () => this.importBranches());
     }
+
+
   }
+
+
 }

@@ -9,7 +9,7 @@ import { environment } from "../../environments/environment";
 @Injectable({
   providedIn: 'root'
 })
-export class AuthStateService {
+export class OrdersService {
   private http = inject(HttpClient);
   private readonly API_BASKET_SERVICE: string = `${environment.url}/basket`;
 
@@ -23,6 +23,15 @@ export class AuthStateService {
           pages: res.pagination.pages,
         };
       }),
+      catchError(() => {
+        return of(null);
+      })
+    );
+  }
+
+  syncOrder(order: BasketOrder) {
+    return this.http.post(`${this.API_BASKET_SERVICE}`, order).pipe(
+      take(1),
       catchError(() => {
         return of(null);
       })

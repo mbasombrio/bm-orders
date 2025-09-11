@@ -28,7 +28,16 @@
         } @else {
         <ion-icon name="people-sharp"></ion-icon>
         }
-        {{ isLoading() ? 'Importando...' : ' Importar Clientes' }}
+        {{ isLoading() ? loadingMessage() : ' Importar Clientes' }}
+      </ion-button>
+
+      <ion-button expand="block" fill="solid" color="tertiary" (click)="importBranches()" [disabled]="isLoading()">
+        @if (isLoading()) {
+        <ion-spinner name="crescent" slot="start"></ion-spinner>
+        } @else {
+        <ion-icon name="business-sharp"></ion-icon>
+        }
+        {{ isLoading() ? loadingMessage() : ' Importar Sucursales' }}
       </ion-button>
 
       @if (isLoading()) {

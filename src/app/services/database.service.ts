@@ -10,7 +10,7 @@ import { SqliteOrdersService } from './sqlite-orders.service';
 })
 export class IndexedDbService {
   private dbName = 'buho_orders_db';
-  private dbVersion = 1;
+  private dbVersion = 2;
   private db: IDBDatabase | null = null;
   private dbInitialized: Promise<void>;
 
@@ -52,6 +52,10 @@ export class IndexedDbService {
           ordersStore.createIndex('state', 'state', { unique: false });
           ordersStore.createIndex('customerId', 'customer.id', { unique: false });
         }
+         if (!db.objectStoreNames.contains('branches')) {
+          const branchesStore = db.createObjectStore('branches', { keyPath: 'id' });
+          branchesStore.createIndex('id', 'id', { unique: false });
+        }
       };
     });
   }
@@ -84,7 +88,7 @@ export class IndexedDbService {
     });
   }
 
-  async checkDatabaseHealth(): Promise<{ exists: boolean; hasArticlesStore: boolean; hasClientsStore: boolean; hasOrdersStore: boolean; version: number }> {
+  async checkDatabaseHealth(): Promise<{ exists: boolean; hasArticlesStore: boolean; hasClientsStore: boolean; hasOrdersStore: boolean; hasOrdersBranch: boolean; version: number }> {
     return new Promise((resolve) => {
       const request = indexedDB.open(this.dbName);
       request.onsuccess = () => {
@@ -94,13 +98,14 @@ export class IndexedDbService {
           hasArticlesStore: db.objectStoreNames.contains('articles'),
           hasClientsStore: db.objectStoreNames.contains('clients'),
           hasOrdersStore: db.objectStoreNames.contains('orders'),
+          hasOrdersBranch: db.objectStoreNames.contains('branches'),
           version: db.version
         };
         db.close();
         resolve(result);
       };
       request.onerror = () => {
-        resolve({ exists: false, hasArticlesStore: false, hasClientsStore: false, hasOrdersStore: false, version: 0 });
+        resolve({ exists: false, hasArticlesStore: false, hasClientsStore: false, hasOrdersStore: false, hasOrdersBranch: false, version: 0 });
       };
     });
   }

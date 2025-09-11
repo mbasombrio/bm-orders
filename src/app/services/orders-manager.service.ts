@@ -97,11 +97,11 @@ export class OrdersManagerService {
     }
 
     if (filter.userId) {
-      orders = orders.filter(order => order.user.id === filter.userId);
+      orders = orders.filter(order => order.user?.id === filter.userId);
     }
 
     if (filter.branch && filter.branch !== 9999999) {
-      orders = orders.filter(order => order.branch.id === filter.branch);
+      orders = orders.filter(order => order.branch?.id === filter.branch);
     }
 
     if (filter.dateFrom && filter.dateTo) {
@@ -153,11 +153,11 @@ export class OrdersManagerService {
         }
 
         if (filter.userId) {
-          filteredOrders = filteredOrders.filter(order => order.user.id === filter.userId);
+          filteredOrders = filteredOrders.filter(order => order.user?.id === filter.userId);
         }
 
         if (filter.branch && filter.branch !== 9999999) {
-          filteredOrders = filteredOrders.filter(order => order.branch.id === filter.branch);
+          filteredOrders = filteredOrders.filter(order => order.branch?.id === filter.branch);
         }
 
         if (filter.dateFrom && filter.dateTo) {
@@ -196,7 +196,7 @@ export class OrdersManagerService {
       (order.customer.email && order.customer.email.toLowerCase().includes(term)) ||
       (order.customer.cellphone && order.customer.cellphone.includes(term)) ||
       order.state.toLowerCase().includes(term) ||
-      order.branch.businessName.toLowerCase().includes(term)
+      order.branch?.businessName.toLowerCase().includes(term)
     );
   }
 

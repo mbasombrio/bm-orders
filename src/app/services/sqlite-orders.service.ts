@@ -42,10 +42,11 @@ export class SqliteOrdersService {
   }
 
   async createOrder(order: BasketOrder): Promise<BasketOrder> {
-    const orderToSave = {
+        const orderToSave: BasketOrder = {
       ...order,
       id: order.id || Date.now(),
-      open: new Date()
+      open: new Date(),
+      sincronizado: false
     };
 
     await this.executeTransaction(
@@ -133,6 +134,19 @@ export class SqliteOrdersService {
       (store) => store.clear()
     );
     await this.loadOrders();
+  }
+
+    async getUnsyncedOrders(): Promise<BasketOrder[]> {
+    const allOrders = await this.getOrders();
+    return allOrders.filter(order => !order.sincronizado);
+  }
+
+  async markOrderAsSynced(orderId: number): Promise<void> {
+    const order = await this.getOrderById(orderId);
+    if (order) {
+      order.sincronizado = true;
+      await this.updateOrder(order);
+    }
   }
 
   async getOrdersCount(): Promise<number> {
