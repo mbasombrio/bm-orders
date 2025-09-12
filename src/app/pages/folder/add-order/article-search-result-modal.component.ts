@@ -13,8 +13,14 @@ import { IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, Ion
 export class ArticleSearchResultModalComponent {
 
   @Input() articles: Article[] = [];
+  @Input() priceList: number = 1;
 
   constructor(private modalController: ModalController) { }
+
+  getPrice(article: Article): number {
+    const priceField = `unitPrice${this.priceList}` as keyof Article;
+    return (article[priceField] as number) || 0;
+  }
 
   dismissModal() {
     this.modalController.dismiss();

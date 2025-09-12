@@ -1,0 +1,34 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Detalles del Cliente</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="customer">
+    <ion-item>
+      <ion-label position="stacked">Nombre</ion-label>
+      <ion-text>{{ customer.name }} {{ customer.lastName }}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Dirección</ion-label>
+      <ion-text>{{ customer.address }}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Ciudad</ion-label>
+      <ion-text>{{ customer.city }}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Teléfono</ion-label>
+      <ion-text>{{ customer.cellphone }}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Email</ion-label>
+      <ion-text>{{ customer.email }}</ion-text>
+    </ion-item>
+  </div>
+</ion-content>

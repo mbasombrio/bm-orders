@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/C:\\Matias\\Cursos\\ionic\\bm-orders\\src\\app\\pages\\folder\\add-order/**)",
+      "Read(/C:\\Matias\\Cursos\\ionic\\bm-orders\\src\\app\\pages\\folder\\add-order/**)",
+      "Read(/C:\\Matias\\Cursos\\ionic\\bm-orders\\src\\app\\pages\\folder\\add-order/**)",
+      "Read(/C:\\Matias\\Cursos\\ionic\\bm-orders\\src\\theme/**)",
+      "Read(/C:\\Matias\\Cursos\\ionic\\bm-orders\\src/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

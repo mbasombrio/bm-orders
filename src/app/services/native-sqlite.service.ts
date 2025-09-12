@@ -88,6 +88,7 @@ export class NativeSqliteService {
         payment TEXT,
         payment_status TEXT,
         observation TEXT,
+        price_list INTEGER,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
@@ -130,8 +131,8 @@ export class NativeSqliteService {
         customer_zip_code, customer_dni, customer_type, delivery_id,
         delivery_name, delivery_last_name, delivery_email, delivery_phone,
         delivery_address, delivery_city, delivery_zip_code, total_amount,
-        branch_id, branch_name, send, payment, payment_status, observation
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        branch_id, branch_name, send, payment, payment_status, observation, price_list
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
@@ -167,7 +168,8 @@ export class NativeSqliteService {
       order.send,
       order.payment,
       order.paymentStatus,
-      order.observation
+      order.observation,
+      order.priceList
     ];
 
     try {
@@ -332,7 +334,8 @@ export class NativeSqliteService {
       send: row.send,
       payment: row.payment,
       paymentStatus: row.payment_status,
-      observation: row.observation
+      observation: row.observation,
+      priceList: row.price_list
     };
   }
 

@@ -59,7 +59,8 @@ export class OrdersManagerService {
         client: null,
         restrictions: null
       },
-      observation: order.observation || ''
+      observation: order.observation || '',
+      priceList: order.priceList || 1
     };
 
     return await this.sqliteOrdersService.createOrder(newOrder);

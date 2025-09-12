@@ -1,20 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenuButton, IonSearchbar, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonItemSliding, IonLabel, IonList, IonMenuButton, IonSearchbar, IonSelect, IonSelectOption, IonTitle, IonToolbar, IonItemOptions, IonItemOption, IonTextarea } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { trashOutline } from 'ionicons/icons';
+import { searchOutline, trash, eyeOutline } from 'ionicons/icons';
 import { Article } from 'src/app/models/article';
+import { BasketOrder } from 'src/app/models/basket-order';
+import { Branch } from 'src/app/models/branch';
 import { Customer } from 'src/app/models/customer';
+import { OrdersManagerService } from 'src/app/services/orders-manager.service';
 import { SqliteArticlesService } from 'src/app/services/sqlite-articles.service';
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
 import { SqliteBranchService } from 'src/app/services/sqllite-branch.service';
-import { Branch } from 'src/app/models/branch';
 import { ArticleSearchResultModalComponent } from './article-search-result-modal.component';
-import { Router } from '@angular/router';
-import { OrdersManagerService } from 'src/app/services/orders-manager.service';
-import { BasketOrder } from 'src/app/models/basket-order';
+import { CustomerDetailsModalComponent } from './customer-details-modal.component';
 
 @Component({
   selector: 'app-add-order',
@@ -43,7 +44,11 @@ import { BasketOrder } from 'src/app/models/basket-order';
     IonList,
     IonLabel,
     IonInput,
-    IonIcon
+    IonIcon,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
+    IonTextarea
   ],
   providers: [ModalController]
 })
@@ -53,8 +58,12 @@ export class AddOrderPage implements OnInit {
   branches: Branch[] = [];
   selectedCustomerId: number | null = null;
   selectedBranchId: number | null = null;
+  selectedShipping: string | null = null;
+  observation: string = '';
+  priceLists = [1, 2, 3, 4, 5];
+  selectedPriceList: number = 1;
   searchQuery: string = '';
-  orderItems: { article: Article, quantity: number }[] = [];
+  orderItems: { article: Article, quantity: number, unitPrice: number }[] = [];
 
   modalController = inject(ModalController)
   constructor(
@@ -66,7 +75,9 @@ export class AddOrderPage implements OnInit {
     private router: Router
   ) {
     addIcons({
-      'trash-outline': trashOutline
+       trash,
+       searchOutline,
+       eyeOutline
     });
   }
 
@@ -81,6 +92,13 @@ export class AddOrderPage implements OnInit {
 
   async loadBranches() {
     this.branches = await this.sqliteBranchService.getBranches();
+  }
+
+  onCustomerChange() {
+    const customer = this.customers.find(c => c.id === this.selectedCustomerId);
+    if (customer && customer.listPrice) {
+      this.selectedPriceList = customer.listPrice;
+    }
   }
 
   async searchArticles() {
@@ -141,7 +159,8 @@ export class AddOrderPage implements OnInit {
     const modal = await this.modalController.create({
       component: ArticleSearchResultModalComponent,
       componentProps: {
-        articles: articles
+        articles: articles,
+        priceList: this.selectedPriceList
       }
     });
 
@@ -153,12 +172,18 @@ export class AddOrderPage implements OnInit {
     }
   }
 
+  getPrice(article: Article): number {
+    const priceField = `unitPrice${this.selectedPriceList}` as keyof Article;
+    return (article[priceField] as number) || 0;
+  }
+
   addArticleToOrder(article: Article, quantity: number) {
     const existingItem = this.orderItems.find(item => item.article.sku === article.sku);
+    const unitPrice = this.getPrice(article);
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
-      this.orderItems.push({ article, quantity });
+      this.orderItems.push({ article, quantity, unitPrice });
     }
   }
 
@@ -171,8 +196,9 @@ export class AddOrderPage implements OnInit {
     await alert.present();
   }
 
-  removeItem(index: number) {
+  removeItem(index: number, slidingItem: any) {
     this.orderItems.splice(index, 1);
+    slidingItem.close();
   }
 
   updateQuantity(index: number) {
@@ -226,17 +252,18 @@ export class AddOrderPage implements OnInit {
         date: new Date(),
         quantity: item.quantity,
         weight: null,
-        unitPrice: null,
+        unitPrice: item.unitPrice,
         size: null,
         design: null
       })),
       totalAmount: 0,
       branch: branch,
-      send: '',
+      send: this.selectedShipping ?? '',
       payment: '',
       paymentStatus: '',
       deliveryAmount: 0,
-      observation: '',
+      observation: this.observation,
+      priceList: this.selectedPriceList,
     };
 
     try {
@@ -252,7 +279,30 @@ export class AddOrderPage implements OnInit {
   resetForm() {
     this.selectedCustomerId = null;
     this.selectedBranchId = null;
+    this.selectedShipping = null;
+    this.observation = '';
+    this.selectedPriceList = 1;
     this.searchQuery = '';
     this.orderItems = [];
+  }
+
+  async showCustomerDetails() {
+    if (!this.selectedCustomerId) {
+      return;
+    }
+
+    const customer = this.customers.find(c => c.id === this.selectedCustomerId);
+    if (!customer) {
+      return;
+    }
+
+    const modal = await this.modalController.create({
+      component: CustomerDetailsModalComponent,
+      componentProps: {
+        customer: customer
+      }
+    });
+
+    await modal.present();
   }
 }

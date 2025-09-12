@@ -20,6 +20,7 @@ export interface BasketOrder {
   payment: string;
   paymentStatus: string;
   deliveryAmount: number;
+  priceList: number;
   user?: User;
     observation: string;
   sincronizado?: boolean;

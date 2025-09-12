@@ -14,6 +14,9 @@
         <h2>{{ article.name }}</h2>
         <p>SKU: {{ article.sku }}</p>
       </ion-label>
+      <ion-label slot="end">
+        <p>{{ getPrice(article) | currency:'ARS':'symbol':'1.2-2' }}</p>
+      </ion-label>
     </ion-item>
   </ion-list>
 </ion-content>
