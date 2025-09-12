@@ -225,8 +225,8 @@
   .quantity-controls {
     display: flex;
     align-items: center;
-    min-width: 100px;
-    max-width: 100px;
+    gap: 16px;
+    justify-content: flex-end;
 
     ion-input {
       --background: #f8f9fa;
@@ -239,7 +239,7 @@
       --padding-end: 6px;
       --padding-top: 4px;
       --padding-bottom: 4px;
-      width: 100px;
+      width: 80px;
       height: 28px;
       font-size: 14px;
       font-weight: 500;
@@ -250,6 +250,14 @@
         --background: #ffffff;
         box-shadow: 0 0 0 1px #3c8dbc;
       }
+    }
+
+    .subtotal {
+      font-weight: 600;
+      color: #3c8dbc;
+      font-size: 1rem;
+      min-width: 80px;
+      text-align: right;
     }
   }
 

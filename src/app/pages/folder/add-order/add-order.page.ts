@@ -64,6 +64,7 @@ export class AddOrderPage implements OnInit {
   selectedPriceList: number = 1;
   searchQuery: string = '';
   orderItems: { article: Article, quantity: number, unitPrice: number }[] = [];
+  totalAmount: number = 0;
 
   modalController = inject(ModalController)
   constructor(
@@ -185,6 +186,11 @@ export class AddOrderPage implements OnInit {
     } else {
       this.orderItems.push({ article, quantity, unitPrice });
     }
+    this.calculateTotal();
+  }
+
+  calculateTotal() {
+    this.totalAmount = this.orderItems.reduce((total, item) => total + (item.quantity * item.unitPrice), 0);
   }
 
   async presentAlert(header: string, message: string) {
@@ -198,6 +204,7 @@ export class AddOrderPage implements OnInit {
 
   removeItem(index: number, slidingItem: any) {
     this.orderItems.splice(index, 1);
+    this.calculateTotal();
     slidingItem.close();
   }
 
@@ -205,6 +212,7 @@ export class AddOrderPage implements OnInit {
     if (this.orderItems[index].quantity < 1) {
       this.orderItems[index].quantity = 1;
     }
+    this.calculateTotal();
   }
 
   async saveOrder() {
@@ -256,7 +264,7 @@ export class AddOrderPage implements OnInit {
         size: null,
         design: null
       })),
-      totalAmount: 0,
+      totalAmount: this.totalAmount,
       branch: branch,
       send: this.selectedShipping ?? '',
       payment: '',
