@@ -521,4 +521,14 @@
 
 
   }
+
+  ion-item-sliding ion-item-options {
+    height: 75px;
+    margin: auto 0;
+  }
+
+  ion-item-sliding ion-item-option {
+    /* --width: 50px; */
+    height: 100%;
+  }
 }
