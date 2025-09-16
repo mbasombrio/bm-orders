@@ -5,9 +5,10 @@ import { AlertController } from '@ionic/angular';
 
 import { IonButton, IonButtons, IonCard, IonCardContent, IonChip, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { addSharp, receiptOutline } from 'ionicons/icons';
+import { addSharp, receiptOutline, createOutline, trashOutline, sendOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { BasketOrder } from 'src/app/models/basket-order';
+import { OrderEditDataService } from 'src/app/services/order-edit-data.service';
 import { SqliteOrdersService } from 'src/app/services/sqlite-orders.service';
 
 @Component({
@@ -55,12 +56,17 @@ export class OrdersPage implements OnInit, OnDestroy {
 
   constructor(
     private alertController: AlertController,
-    private sqliteOrdersService: SqliteOrdersService
+    private sqliteOrdersService: SqliteOrdersService,
+    private orderEditDataService: OrderEditDataService
   ) {
-     addIcons({ addSharp, receiptOutline})
+     addIcons({ addSharp, receiptOutline, createOutline, trashOutline, sendOutline })
   }
 
   ngOnInit() {
+    // No need to call initializeOrders here, ionViewWillEnter will handle it
+  }
+
+  ionViewWillEnter() {
     this.initializeOrders();
   }
 
@@ -71,7 +77,18 @@ export class OrdersPage implements OnInit, OnDestroy {
   }
 
   private async initializeOrders() {
-
+    this.ordersSubscription = this.sqliteOrdersService.getOrdersObservable().subscribe(orders => {
+      this.orders = orders;
+      this.orderResponse.rows = orders;
+      this.orderResponse.pagination.count = orders.length;
+      this.orderResponse.pagination.pages = Math.ceil(orders.length / this.orderResponse.pagination.size);
+    });
+    // Also load orders initially in case the observable doesn't emit immediately
+    const initialOrders = await this.sqliteOrdersService.getOrders();
+    this.orders = initialOrders;
+    this.orderResponse.rows = initialOrders;
+    this.orderResponse.pagination.count = initialOrders.length;
+    this.orderResponse.pagination.pages = Math.ceil(initialOrders.length / this.orderResponse.pagination.size);
   }
 
   BasketOrderState = {
@@ -159,38 +176,10 @@ export class OrdersPage implements OnInit, OnDestroy {
     // Aquí puedes implementar la navegación a los detalles de la orden
   }
 
-  async editOrder(order: any) {
-    const alert = await this.alertController.create({
-      header: `Editar Pedido #${order.id}`,
-      subHeader: `Cliente: ${order.customer.name} ${order.customer.lastName}`,
-      message: 'Seleccione la acción que desea realizar:',
-      buttons: [
-        {
-          text: 'Cambiar Estado',
-          handler: () => {
-            this.changeOrderStatus(order);
-          }
-        },
-        {
-          text: 'Editar Cliente',
-          handler: () => {
-            this.editCustomer(order);
-          }
-        },
-        {
-          text: 'Editar Detalles',
-          handler: () => {
-            this.editOrderDetails(order);
-          }
-        },
-        {
-          text: 'Cancelar',
-          role: 'cancel'
-        }
-      ]
-    });
-
-    await alert.present();
+  async editOrder(order: BasketOrder) {
+    console.log('Order to edit:', order);
+    this.orderEditDataService.setOrder(order);
+    this.router.navigate(['add-order']);
   }
 
   async deleteOrder(order: any) {
@@ -417,6 +406,28 @@ export class OrdersPage implements OnInit, OnDestroy {
   }
 
   addNewOrder() {
+    this.orderEditDataService.clearOrder();
     this.router.navigate(['add-order']);
+  }
+
+  async sendOrder(order: BasketOrder) {
+    const alert = await this.alertController.create({
+      header: 'Enviar Pedido',
+      message: `¿Está seguro de que desea enviar el pedido #${order.id}?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Enviar',
+          handler: () => {
+            // Implement send logic here
+            this.showToast(`Pedido #${order.id} enviado (funcionalidad pendiente)`);
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 }

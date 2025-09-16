@@ -14,6 +14,7 @@ import { OrdersManagerService } from 'src/app/services/orders-manager.service';
 import { SqliteArticlesService } from 'src/app/services/sqlite-articles.service';
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
 import { SqliteBranchService } from 'src/app/services/sqllite-branch.service';
+import { OrderEditDataService } from 'src/app/services/order-edit-data.service';
 import { ArticleSearchResultModalComponent } from './article-search-result-modal.component';
 import { CustomerDetailsModalComponent } from './customer-details-modal.component';
 
@@ -65,6 +66,7 @@ export class AddOrderPage implements OnInit {
   searchQuery: string = '';
   orderItems: { article: Article, quantity: number, unitPrice: number }[] = [];
   totalAmount: number = 0;
+  orderToEdit: BasketOrder | null = null;
 
   modalController = inject(ModalController)
   constructor(
@@ -73,7 +75,8 @@ export class AddOrderPage implements OnInit {
     private alertController: AlertController,
     private sqliteBranchService: SqliteBranchService,
     private ordersManagerService: OrdersManagerService,
-    private router: Router
+    private router: Router,
+    private orderEditDataService: OrderEditDataService
   ) {
     addIcons({
        trash,
@@ -82,9 +85,29 @@ export class AddOrderPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.loadCustomers();
-    this.loadBranches();
+  async ngOnInit() {
+    await this.loadCustomers();
+    await this.loadBranches();
+  }
+
+  ionViewWillEnter() {
+    this.orderToEdit = this.orderEditDataService.getOrder();
+    console.log('Order retrieved from service:', this.orderToEdit);
+    if (this.orderToEdit) {
+      this.selectedCustomerId = this.orderToEdit.customer?.id ?? null;
+      this.selectedBranchId = this.orderToEdit.branch?.id ?? null;
+      this.selectedShipping = this.orderToEdit.send ?? null;
+      this.observation = this.orderToEdit.observation ?? '';
+      this.selectedPriceList = this.orderToEdit.priceList ?? 1;
+      this.orderItems = this.orderToEdit.items.map(item => ({
+        article: item.item!,
+        quantity: item.quantity ?? 0,
+        unitPrice: item.unitPrice ?? 0
+      }));
+      this.calculateTotal();
+    } else {
+      this.resetForm();
+    }
   }
 
   async loadCustomers() {
@@ -100,6 +123,13 @@ export class AddOrderPage implements OnInit {
     if (customer && customer.listPrice) {
       this.selectedPriceList = customer.listPrice;
     }
+  }
+
+  onPriceListChange() {
+    this.orderItems.forEach(item => {
+      item.unitPrice = this.getPrice(item.article);
+    });
+    this.calculateTotal();
   }
 
   async searchArticles() {
@@ -221,6 +251,21 @@ export class AddOrderPage implements OnInit {
       return;
     }
 
+    if (!this.selectedBranchId) {
+      this.presentAlert('Error', 'Debe seleccionar una sucursal.');
+      return;
+    }
+
+    if (!this.selectedShipping) {
+      this.presentAlert('Error', 'Debe seleccionar un tipo de envío.');
+      return;
+    }
+
+    if (!this.selectedPriceList) {
+      this.presentAlert('Error', 'Debe seleccionar una lista de precios.');
+      return;
+    }
+
     if (this.orderItems.length === 0) {
       this.presentAlert('Error', 'Debe agregar al menos un artículo al pedido.');
       return;
@@ -235,7 +280,7 @@ export class AddOrderPage implements OnInit {
     const branch = this.branches.find(b => b.id === this.selectedBranchId);
 
     const newOrder: BasketOrder = {
-      id: Date.now(),
+      id: this.orderToEdit?.id || Date.now(),
       index: 0,
       type: 'mobile',
       open: new Date(),
@@ -275,9 +320,14 @@ export class AddOrderPage implements OnInit {
     };
 
     try {
-      await this.ordersManagerService.createOrder(newOrder);
-      this.presentAlert('Éxito', 'Pedido guardado correctamente.');
-      this.resetForm();
+      if (this.orderToEdit) {
+        await this.ordersManagerService.updateOrder(newOrder);
+        this.presentAlert('Éxito', 'Pedido actualizado correctamente.');
+      } else {
+        await this.ordersManagerService.createOrder(newOrder);
+        this.presentAlert('Éxito', 'Pedido guardado correctamente.');
+      }
+      this.orderEditDataService.clearOrder(); // Clear the order after saving/updating
       this.router.navigate(['/orders']);
     } catch (error) {
       this.presentAlert('Error', 'Hubo un problema al guardar el pedido.');
@@ -292,6 +342,8 @@ export class AddOrderPage implements OnInit {
     this.selectedPriceList = 1;
     this.searchQuery = '';
     this.orderItems = [];
+    this.totalAmount = 0;
+    this.orderToEdit = null;
   }
 
   async showCustomerDetails() {

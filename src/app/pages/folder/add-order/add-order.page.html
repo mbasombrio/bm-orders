@@ -37,7 +37,7 @@
       </ion-item>
 
       <ion-item>
-        <ion-select [(ngModel)]="selectedPriceList" label="Lista de Precios" label-placement="stacked">
+        <ion-select [(ngModel)]="selectedPriceList" (ionChange)="onPriceListChange()" label="Lista de Precios" label-placement="stacked">
           <ion-select-option *ngFor="let price of priceLists" [value]="price">{{ price }}</ion-select-option>
         </ion-select>
       </ion-item>

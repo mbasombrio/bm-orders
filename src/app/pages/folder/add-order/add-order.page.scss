@@ -1,6 +1,5 @@
 :host {
   ion-content {
-    --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --padding-top: 20px;
     --padding-bottom: 20px;
   }
@@ -43,7 +42,7 @@
 
   ion-card-header {
     padding: 20px 20px 10px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--app-background-gradient);
     border-radius: 20px 20px 0 0;
     margin: -1px -1px 0 -1px;
   }
@@ -472,63 +471,7 @@
     }
   }
 
-  // Estilos globales mobile-first
-  :host ::ng-deep {
-
-    // Labels flotantes estilo iOS
-    .select-wrapper .label-floating,
-    .item-label-floating .item-label {
-      color: #3c8dbc !important;
-      font-size: 12px !important;
-      font-weight: 600 !important;
-      transform: translateY(0) !important;
-      margin-bottom: 4px;
-      gap: 8px;
-    }
-
-    .select-label-placement-floating:not(.label-floating) .native-wrapper .select-placeholder {
-      opacity: 0;
-      margin-top: 20px;
-    }
-
-    // Texto seleccionado estilo mobile
-    .select-text {
-      color: #1a202c !important;
-      font-size: 16px !important;
-      font-weight: 500 !important;
-      padding-top: 4px;
-    }
-
-    // Placeholder mobile
-    .select-placeholder {
-      color: #9ca3af !important;
-      font-size: 16px !important;
-      font-weight: 400 !important;
-    }
-
-
-    // Labels cuando están activos estilo mobile
-    ion-item.item-has-focus .item-label,
-    ion-item.item-has-value .item-label,
-    ion-item.item-label-floating .item-label {
-      color: #3c8dbc !important;
-      font-size: 12px !important;
-      font-weight: 600 !important;
-      line-height: 1.2 !important;
-    }
-
-    // Interface de selección (popover/alert)
-    .select-interface-option {
-      --color: #2d3748;
-
-      &.select-interface-option-selected {
-        --color: #3c8dbc;
-        background: rgba(60, 141, 188, 0.1);
-      }
-    }
-
-
-  }
+  
 
   ion-item-sliding ion-item-options {
     height: 75px;
@@ -538,5 +481,20 @@
   ion-item-sliding ion-item-option {
     /* --width: 50px; */
     height: 100%;
+  }
+
+  ion-item ion-textarea {
+    ion-label {
+      color: #2d3748;
+    }
+  }
+
+  ion-item.item-has-focus ion-textarea ion-label,
+  ion-item.item-has-value ion-textarea ion-label {
+    color: #2d3748;
+  }
+
+  ion-textarea.ion-valid {
+    --highlight-color: var(--ion-color-primary);
   }
 }
