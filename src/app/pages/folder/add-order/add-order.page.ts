@@ -3,7 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonItemSliding, IonLabel, IonList, IonMenuButton, IonSearchbar, IonSelect, IonSelectOption, IonTitle, IonToolbar, IonItemOptions, IonItemOption, IonTextarea } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonItemSliding, IonLabel, IonList, IonSearchbar, IonSelect, IonSelectOption, IonTitle, IonToolbar, IonItemOptions, IonItemOption, IonTextarea } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { searchOutline, trash, eyeOutline } from 'ionicons/icons';
 import { Article } from 'src/app/models/article';
@@ -30,7 +30,7 @@ import { CustomerDetailsModalComponent } from './customer-details-modal.componen
     IonHeader,
     IonToolbar,
     IonButtons,
-    IonMenuButton,
+    IonBackButton,
     IonTitle,
     IonContent,
     IonCard,
@@ -205,14 +205,18 @@ export class AddOrderPage implements OnInit {
 
   getPrice(article: Article): number {
     const priceField = `unitPrice${this.selectedPriceList}` as keyof Article;
-    return (article[priceField] as number) || 0;
+    let price = (article[priceField] as number) || 0;
+    if (price === 0) {
+      price = (article['unitPrice1'] as number) || 0;
+    }
+    return price;
   }
 
   addArticleToOrder(article: Article, quantity: number) {
     const existingItem = this.orderItems.find(item => item.article.sku === article.sku);
     const unitPrice = this.getPrice(article);
     if (existingItem) {
-      existingItem.quantity += quantity;
+      this.presentAlert('Artículo existente', 'El artículo ya se encuentra en el pedido.');
     } else {
       this.orderItems.push({ article, quantity, unitPrice });
     }

@@ -102,7 +102,7 @@ export class OrdersPage implements OnInit, OnDestroy {
     Approved: 'Aprobado',
   };
 
-  toShowMoney = (value: number) => (value ? value / 100.0 : 0);
+  toShowMoney = (value: number) => (value ? value : 0);
 
   showTotal(element:any) {
     let total = Number(this.toShowMoney(element.totalAmount));
@@ -370,7 +370,7 @@ export class OrdersPage implements OnInit, OnDestroy {
           handler: async (data) => {
             try {
               if (data.type) order.type = data.type;
-              if (data.totalAmount) order.totalAmount = parseFloat(data.totalAmount) * 100;
+              if (data.totalAmount) order.totalAmount = parseFloat(data.totalAmount);
               if (data.deliveryAmount) order.deliveryAmount = parseFloat(data.deliveryAmount);
 
               await this.sqliteOrdersService.updateOrder(order);

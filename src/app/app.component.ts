@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   public appPages = [
     { title: 'Inicio', url: '/home', icon: 'home-outline' },
     { title: 'Pedidos', url: '/orders', icon: 'list-outline' },
-    { title: 'Artículos', url: '/data', icon: 'cube-outline' },
+    { title: 'Datos', url: '/data', icon: 'cube-outline' },
   ];
 
   isLoginPage: boolean = false;

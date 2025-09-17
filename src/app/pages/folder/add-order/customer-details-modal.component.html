@@ -1,7 +1,6 @@
-
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Detalles del Cliente</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center">Detalles del Cliente</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="dismiss()">Cerrar</ion-button>
     </ion-buttons>
@@ -10,25 +9,42 @@
 
 <ion-content class="ion-padding">
   <div *ngIf="customer">
-    <ion-item>
-      <ion-label position="stacked">Nombre</ion-label>
-      <ion-text>{{ customer.name }} {{ customer.lastName }}</ion-text>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Dirección</ion-label>
-      <ion-text>{{ customer.address }}</ion-text>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Ciudad</ion-label>
-      <ion-text>{{ customer.city }}</ion-text>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Teléfono</ion-label>
-      <ion-text>{{ customer.cellphone }}</ion-text>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Email</ion-label>
-      <ion-text>{{ customer.email }}</ion-text>
-    </ion-item>
+    <ion-card class="ion-padding">
+      <ion-card-header class="ion-text-center">
+        <ion-card-title>{{ customer.name }} {{ customer.lastName }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item lines="full">
+            <ion-icon name="home-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h3>Dirección</h3>
+              <p>{{ customer.address }}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-icon name="location-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h3>Ciudad</h3>
+              <p>{{ customer.city }}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-icon name="call-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h3>Teléfono</h3>
+              <p>{{ customer.cellphone }}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-icon name="mail-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h3>Email</h3>
+              <p>{{ customer.email }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
   </div>
 </ion-content>
