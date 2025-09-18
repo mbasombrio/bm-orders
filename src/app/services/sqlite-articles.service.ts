@@ -235,6 +235,15 @@ export class SqliteArticlesService {
     );
   }
 
+  async searchArticles(searchTerm: string): Promise<Article[]> {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const allArticles = await this.getArticles();
+    return allArticles.filter(article =>
+      article.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+      (article.sku && article.sku.toLowerCase().includes(lowerCaseSearchTerm))
+    );
+  }
+
   private async loadArticles(): Promise<void> {
     try {
       const articles = await this.getArticles();

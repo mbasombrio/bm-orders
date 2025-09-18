@@ -3,18 +3,18 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
-import { IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonItemSliding, IonLabel, IonList, IonSearchbar, IonSelect, IonSelectOption, IonTitle, IonToolbar, IonItemOptions, IonItemOption, IonTextarea } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonSearchbar, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { searchOutline, trash, eyeOutline } from 'ionicons/icons';
+import { eyeOutline, searchOutline, trash } from 'ionicons/icons';
 import { Article } from 'src/app/models/article';
 import { BasketOrder } from 'src/app/models/basket-order';
 import { Branch } from 'src/app/models/branch';
 import { Customer } from 'src/app/models/customer';
+import { OrderEditDataService } from 'src/app/services/order-edit-data.service';
 import { OrdersManagerService } from 'src/app/services/orders-manager.service';
 import { SqliteArticlesService } from 'src/app/services/sqlite-articles.service';
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
 import { SqliteBranchService } from 'src/app/services/sqllite-branch.service';
-import { OrderEditDataService } from 'src/app/services/order-edit-data.service';
 import { ArticleSearchResultModalComponent } from './article-search-result-modal.component';
 import { CustomerDetailsModalComponent } from './customer-details-modal.component';
 
@@ -137,13 +137,7 @@ export class AddOrderPage implements OnInit {
       return;
     }
 
-    const searchTerm = this.searchQuery.toLowerCase();
-    const allArticles = await this.sqliteArticlesService.getArticles();
-
-    const results = allArticles.filter(article =>
-      article.name.toLowerCase().includes(searchTerm) ||
-      article.sku.toLowerCase().includes(searchTerm)
-    );
+    const results = await this.sqliteArticlesService.searchArticles(this.searchQuery);
 
     if (results.length === 0) {
       this.presentAlert('No encontrado', 'No se encontraron artículos con el término de búsqueda.');
@@ -318,7 +312,7 @@ export class AddOrderPage implements OnInit {
       send: this.selectedShipping ?? '',
       payment: '',
       paymentStatus: '',
-      deliveryAmount: 0,
+      deliveryAmount: (this.selectedShipping === 'delivery') ? 1 : 0,
       observation: this.observation,
       priceList: this.selectedPriceList,
     };

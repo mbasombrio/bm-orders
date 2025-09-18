@@ -18,7 +18,11 @@ export class ArticleSearchResultModalComponent {
   constructor(private modalController: ModalController) { }
 
   getPrice(article: Article): number {
-    const priceField = `unitPrice${this.priceList}` as keyof Article;
+    let priceListToUse = this.priceList;
+    if (priceListToUse === 0) {
+      priceListToUse = 1;
+    }
+    const priceField = `unitPrice${priceListToUse}` as keyof Article;
     return (article[priceField] as number) || 0;
   }
 

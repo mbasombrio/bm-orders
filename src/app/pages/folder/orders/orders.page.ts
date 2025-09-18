@@ -5,11 +5,13 @@ import { AlertController } from '@ionic/angular';
 
 import { IonButton, IonButtons, IonCard, IonCardContent, IonChip, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { addSharp, receiptOutline, createOutline, trashOutline, sendOutline } from 'ionicons/icons';
+import { addSharp, createOutline, receiptOutline, sendOutline, trashOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { BasketOrder } from 'src/app/models/basket-order';
+import { Carrito } from 'src/app/models/carrito';
 import { OrderEditDataService } from 'src/app/services/order-edit-data.service';
 import { SqliteOrdersService } from 'src/app/services/sqlite-orders.service';
+import { toLong } from 'src/app/utils/money.util';
 
 @Component({
   selector: 'app-orders',
@@ -59,7 +61,7 @@ export class OrdersPage implements OnInit, OnDestroy {
     private sqliteOrdersService: SqliteOrdersService,
     private orderEditDataService: OrderEditDataService
   ) {
-     addIcons({ addSharp, receiptOutline, createOutline, trashOutline, sendOutline })
+    addIcons({ addSharp, receiptOutline, createOutline, trashOutline, sendOutline })
   }
 
   ngOnInit() {
@@ -104,7 +106,7 @@ export class OrdersPage implements OnInit, OnDestroy {
 
   toShowMoney = (value: number) => (value ? value : 0);
 
-  showTotal(element:any) {
+  showTotal(element: any) {
     let total = Number(this.toShowMoney(element.totalAmount));
     if (element.deliveryAmount) {
       total += Number(element.deliveryAmount);
@@ -423,6 +425,7 @@ export class OrdersPage implements OnInit, OnDestroy {
           text: 'Enviar',
           handler: () => {
             // Implement send logic here
+            this.saveOrder(order);
             this.showToast(`Pedido #${order.id} enviado (funcionalidad pendiente)`);
           }
         }
@@ -430,4 +433,17 @@ export class OrdersPage implements OnInit, OnDestroy {
     });
     await alert.present();
   }
+
+  saveOrder(order: BasketOrder) {
+    const cart: Carrito = {
+      ...new Carrito(),
+      listadoArticulos: order.items.map(item => ({
+        ...item,
+        unitPrice: toLong(item.unitPrice || 0),
+        status: 'Pending'
+      })),
+
+    }
+  }
+
 }
