@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   product: "retail",
   title: "DEV",
-  url: "https://server.buhomanager.com:444/",
+  url: "http://localhost:9555/",
   useMultiClient: true,
   nameMultiClient: "tomas",
   appVersion: '1.0.2'

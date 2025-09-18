@@ -22,8 +22,16 @@ export class ArticleSearchResultModalComponent {
     if (priceListToUse === 0) {
       priceListToUse = 1;
     }
+
     const priceField = `unitPrice${priceListToUse}` as keyof Article;
-    return (article[priceField] as number) || 0;
+    let priceInCents = (article[priceField] as number) || 0;
+
+    if (priceInCents === 0) {
+      const fallbackPriceField = `unitPrice1` as keyof Article;
+      priceInCents = (article[fallbackPriceField] as number) || 0;
+    }
+
+    return priceInCents / 100;
   }
 
   dismissModal() {

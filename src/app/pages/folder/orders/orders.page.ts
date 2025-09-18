@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
+import { BasketService } from './../../../services/basket.service';
 
 import { IonButton, IonButtons, IonCard, IonCardContent, IonChip, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -9,6 +10,7 @@ import { addSharp, createOutline, receiptOutline, sendOutline, trashOutline } fr
 import { Subscription } from 'rxjs';
 import { BasketOrder } from 'src/app/models/basket-order';
 import { Carrito } from 'src/app/models/carrito';
+import { AuthService } from 'src/app/services/auth.service';
 import { OrderEditDataService } from 'src/app/services/order-edit-data.service';
 import { SqliteOrdersService } from 'src/app/services/sqlite-orders.service';
 import { toLong } from 'src/app/utils/money.util';
@@ -42,6 +44,10 @@ import { toLong } from 'src/app/utils/money.util';
   ]
 })
 export class OrdersPage implements OnInit, OnDestroy {
+  readonly authService = inject(AuthService);
+  readonly basketService = inject(BasketService);
+
+
   orders: BasketOrder[] = [];
   orderResponse = {
     rows: this.orders,
@@ -59,7 +65,8 @@ export class OrdersPage implements OnInit, OnDestroy {
   constructor(
     private alertController: AlertController,
     private sqliteOrdersService: SqliteOrdersService,
-    private orderEditDataService: OrderEditDataService
+    private orderEditDataService: OrderEditDataService,
+    private loadingController: LoadingController
   ) {
     addIcons({ addSharp, receiptOutline, createOutline, trashOutline, sendOutline })
   }
@@ -390,8 +397,7 @@ export class OrdersPage implements OnInit, OnDestroy {
   }
 
   async showToast(message: string) {
-    // Simple console log for now, you can implement a toast service later
-    console.log(message);
+
 
     // You could also show an alert as a simple notification
     const alert = await this.alertController.create({
@@ -434,16 +440,45 @@ export class OrdersPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  saveOrder(order: BasketOrder) {
+  async saveOrder(order: BasketOrder) {
+    const loading = await this.loadingController.create({
+      message: 'Guardando pedido...',
+    });
+    await loading.present();
+
     const cart: Carrito = {
       ...new Carrito(),
       listadoArticulos: order.items.map(item => ({
         ...item,
         unitPrice: toLong(item.unitPrice || 0),
-        status: 'Pending'
+        status: 'Pending',
       })),
-
+      user: this.authService.getIdentity() || null
     }
+
+    this.basketService.makeOrder(cart).subscribe({
+      next: async (response) => {
+        await loading.dismiss();
+        try {
+          if (order.id) {
+            await this.sqliteOrdersService.deleteOrder(order.id);
+            this.showToast(`Pedido #${order.id} guardado y eliminado localmente.`);
+          } else {
+            this.showToast('Pedido guardado, pero no se pudo eliminar localmente por falta de ID.');
+          }
+        } catch (error) {
+          console.error('Error deleting order from SQLite:', error);
+          this.showToast('Pedido guardado, pero hubo un error al eliminarlo localmente.');
+        }
+      },
+      error: async (err) => {
+        await loading.dismiss();
+        this.showToast(`Error al guardar el pedido`);
+      }
+    })
   }
+
+
+
 
 }
