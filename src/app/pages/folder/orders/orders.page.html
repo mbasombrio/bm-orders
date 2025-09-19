@@ -16,7 +16,7 @@
   <!-- Lista de pedidos -->
   <ion-card>
     <ion-card-content>
-      @if (orderResponse.rows.length === 0) {
+      @if (orderResponse().rows.length === 0) {
       <div class="empty-state">
         <ion-icon name="receipt-outline" size="large"></ion-icon>
         <h3>No hay pedidos</h3>
@@ -27,7 +27,7 @@
       </div>
       } @else {
       <ion-list>
-        @for (order of orderResponse.rows; track order.id) {
+        @for (order of orderResponse().rows; track order.id) {
         <ion-item-sliding>
           <ion-item button (click)="viewOrderDetails(order)">
             <ion-label>

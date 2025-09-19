@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { BasketService } from './../../../services/basket.service';
@@ -10,6 +10,7 @@ import { addSharp, businessOutline, carOutline, createOutline, receiptOutline, s
 import { Subscription } from 'rxjs';
 import { BasketOrder } from 'src/app/models/basket-order';
 import { Carrito } from 'src/app/models/carrito';
+import { ResponseDTO } from 'src/app/models/response';
 import { AuthService } from 'src/app/services/auth.service';
 import { OrderEditDataService } from 'src/app/services/order-edit-data.service';
 import { SqliteOrdersService } from 'src/app/services/sqlite-orders.service';
@@ -50,16 +51,22 @@ export class OrdersPage implements OnInit, OnDestroy {
 
 
   orders: BasketOrder[] = [];
-  orderResponse = {
-    rows: this.orders,
-    pagination: {
-      count: 0,
-      page: 1,
-      pages: 1,
-      size: 25
-    }
-  };
 
+  get initial() {
+    return {
+      rows: [],
+      pagination: {
+        count: 0,
+        page: 1,
+        pages: 1,
+        size: 0
+      },
+      summary: {}
+    }
+  }
+
+
+  orderResponse = signal<ResponseDTO<BasketOrder>>(this.initial);
   private ordersSubscription?: Subscription;
   router = inject(Router);
 
@@ -89,16 +96,17 @@ export class OrdersPage implements OnInit, OnDestroy {
   private async initializeOrders() {
     this.ordersSubscription = this.sqliteOrdersService.getOrdersObservable().subscribe(orders => {
       this.orders = orders;
-      this.orderResponse.rows = orders;
-      this.orderResponse.pagination.count = orders.length;
-      this.orderResponse.pagination.pages = Math.ceil(orders.length / this.orderResponse.pagination.size);
+
+      this.orderResponse.set({
+        ...this.initial,
+        rows: orders,
+        pagination: {
+          ...this.initial.pagination,
+          count: orders.length,
+          pages: Math.ceil(orders.length / this.orderResponse().pagination.size)
+        }
+      })
     });
-    // Also load orders initially in case the observable doesn't emit immediately
-    const initialOrders = await this.sqliteOrdersService.getOrders();
-    this.orders = initialOrders;
-    this.orderResponse.rows = initialOrders;
-    this.orderResponse.pagination.count = initialOrders.length;
-    this.orderResponse.pagination.pages = Math.ceil(initialOrders.length / this.orderResponse.pagination.size);
   }
 
   BasketOrderState = {
@@ -471,7 +479,10 @@ export class OrdersPage implements OnInit, OnDestroy {
           if (order.id) {
             await this.sqliteOrdersService.deleteOrder(order.id);
             this.orders = await this.sqliteOrdersService.getOrders();
-            this.orderResponse.rows = this.orders;
+            this.orderResponse.set({
+              ...this.initial,
+              rows: this.orders,
+            })
             this.showToast(`Pedido #${order.id} guardado y eliminado localmente.`);
           } else {
             this.showToast('Pedido guardado, pero no se pudo eliminar localmente por falta de ID.');
