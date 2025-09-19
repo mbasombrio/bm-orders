@@ -38,21 +38,18 @@
               </div>
               <h3>{{ order.customer.name }}</h3>
               <div class="order-details">
-                <ion-chip size="small" [color]="getDeliveryTypeColor(order)">
-                  <ion-icon name="{{ getDeliveryType(order) === 'Envío' ? 'car' : 'storefront' }}"></ion-icon>
-                  <ion-label>{{ getDeliveryType(order) }}</ion-label>
-                </ion-chip>
-                <ion-chip size="small" color="medium">
-                  <ion-icon name="business"></ion-icon>
-                  <ion-label>{{ getBranchName(order) }}</ion-label>
-                </ion-chip>
-              </div>
-
-              <div class="order-bottom">
-                <ion-chip [color]="getStatusColor(order.state)" class="status-chip">
-                  {{ getStatusText(order.state) }}
-                </ion-chip>
-                <span class="order-total">${{ showTotal(order) | currency }}</span>
+                <div>
+                  <ion-chip size="small" [color]="getDeliveryTypeColor(order)">
+                    <ion-icon
+                      name="{{ getDeliveryType(order) === 'Envío' ? 'car-outline' : 'storefront-outline' }}"></ion-icon>
+                    <ion-label>{{ getDeliveryType(order) }}</ion-label>
+                  </ion-chip>
+                  <ion-chip size="small" color="medium">
+                    <ion-icon name="business-outline"></ion-icon>
+                    <ion-label>{{ getBranchName(order) }}</ion-label>
+                  </ion-chip>
+                </div>
+                <span class="order-total">{{ showTotal(order) | currency }}</span>
               </div>
             </ion-label>
           </ion-item>

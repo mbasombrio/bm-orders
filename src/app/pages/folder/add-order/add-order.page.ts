@@ -277,6 +277,11 @@ export class AddOrderPage implements OnInit {
 
     const branch = this.branches.find(b => b.id === this.selectedBranchId);
 
+    if (!branch) {
+      this.presentAlert('Error', 'Sucursal no encontrada.');
+      return;
+    }
+
     const newOrder: BasketOrder = {
       id: this.orderToEdit?.id || Date.now(),
       index: 0,

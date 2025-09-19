@@ -83,6 +83,8 @@ ion-item {
 
     .order-details {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
       gap: 0.5rem;
       margin-top: 0.5rem;
       flex-wrap: wrap;
@@ -121,17 +123,19 @@ ion-item {
           --color: var(--ion-color-medium);
         }
       }
+
+        .order-total {
+        font-weight: 600;
+        font-size: 1.2rem;
+      }
     }
 
     .order-bottom {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
 
-      .order-total {
-        font-weight: 600;
-        font-size: 1.2rem;
-      }
+
     }
 
 

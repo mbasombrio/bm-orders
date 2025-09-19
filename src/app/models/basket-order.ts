@@ -15,7 +15,7 @@ export interface BasketOrder {
   customerDelivery: BasketCustomer;
   items: BasketItem[];
   totalAmount: number;
-  branch?: Branch;
+  branch: Branch;
   send: string;
   payment: string;
   paymentStatus: string;
