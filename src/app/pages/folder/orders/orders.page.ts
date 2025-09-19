@@ -6,7 +6,7 @@ import { BasketService } from './../../../services/basket.service';
 
 import { IonButton, IonButtons, IonCard, IonCardContent, IonChip, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { addSharp, createOutline, receiptOutline, sendOutline, trashOutline } from 'ionicons/icons';
+import { addSharp, businessOutline, carOutline, createOutline, receiptOutline, sendOutline, storefrontOutline, trashOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { BasketOrder } from 'src/app/models/basket-order';
 import { Carrito } from 'src/app/models/carrito';
@@ -46,6 +46,7 @@ import { toLong } from 'src/app/utils/money.util';
 export class OrdersPage implements OnInit, OnDestroy {
   readonly authService = inject(AuthService);
   readonly basketService = inject(BasketService);
+  readonly status_Pending = 'Pending';
 
 
   orders: BasketOrder[] = [];
@@ -68,7 +69,7 @@ export class OrdersPage implements OnInit, OnDestroy {
     private orderEditDataService: OrderEditDataService,
     private loadingController: LoadingController
   ) {
-    addIcons({ addSharp, receiptOutline, createOutline, trashOutline, sendOutline })
+    addIcons({ addSharp, receiptOutline, createOutline, trashOutline, sendOutline, businessOutline, carOutline, storefrontOutline })
   }
 
   ngOnInit() {
@@ -115,7 +116,7 @@ export class OrdersPage implements OnInit, OnDestroy {
 
   showTotal(element: any) {
     let total = Number(this.toShowMoney(element.totalAmount));
-    if (element.deliveryAmount) {
+    if (element.deliveryAmount > 1) {
       total += Number(element.deliveryAmount);
     }
     return total;
@@ -441,6 +442,9 @@ export class OrdersPage implements OnInit, OnDestroy {
   }
 
   async saveOrder(order: BasketOrder) {
+
+    console.log(order)
+
     const loading = await this.loadingController.create({
       message: 'Guardando pedido...',
     });
@@ -450,18 +454,24 @@ export class OrdersPage implements OnInit, OnDestroy {
       ...new Carrito(),
       listadoArticulos: order.items.map(item => ({
         ...item,
-        unitPrice: toLong(item.unitPrice || 0),
-        status: 'Pending',
+        unitPrice: toLong(item.unitPrice * 100),
       })),
-      user: this.authService.getIdentity() || null
+      user: this.authService.getIdentity() || null,
+      customer: order.customer,
+      customerDelivery: order.customerDelivery,
+      branch: order.branch,
+      deliveryAmount: order.deliveryAmount,
+      observation: order.observation,
+      state: this.status_Pending
     }
-
     this.basketService.makeOrder(cart).subscribe({
-      next: async (response) => {
+      next: async () => {
         await loading.dismiss();
         try {
           if (order.id) {
             await this.sqliteOrdersService.deleteOrder(order.id);
+            this.orders = await this.sqliteOrdersService.getOrders();
+            this.orderResponse.rows = this.orders;
             this.showToast(`Pedido #${order.id} guardado y eliminado localmente.`);
           } else {
             this.showToast('Pedido guardado, pero no se pudo eliminar localmente por falta de ID.');
@@ -477,8 +487,4 @@ export class OrdersPage implements OnInit, OnDestroy {
       }
     })
   }
-
-
-
-
 }
