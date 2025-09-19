@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { IonButton, IonButtons, IonContent, IonHeader, IonItem, IonLabel, IonList, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Article } from 'src/app/models/article';
-import { IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, IonList, IonItem, IonLabel } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-article-search-result-modal',
@@ -31,7 +31,7 @@ export class ArticleSearchResultModalComponent {
       priceInCents = (article[fallbackPriceField] as number) || 0;
     }
 
-    return priceInCents / 100;
+    return priceInCents;
   }
 
   dismissModal() {

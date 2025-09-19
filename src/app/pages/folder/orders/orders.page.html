@@ -52,7 +52,7 @@
                 <ion-chip [color]="getStatusColor(order.state)" class="status-chip">
                   {{ getStatusText(order.state) }}
                 </ion-chip>
-                <span class="order-total">${{ showTotal(order) | number:'1.2-2' }}</span>
+                <span class="order-total">${{ showTotal(order) | currency }}</span>
               </div>
             </ion-label>
           </ion-item>

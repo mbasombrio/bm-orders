@@ -15,7 +15,7 @@
         <p>SKU: {{ article.sku }}</p>
       </ion-label>
       <ion-label slot="end">
-        <p>{{ getPrice(article) | currency:'ARS':'symbol':'1.2-2' }}</p>
+        <p>{{ getPrice(article) | currency }}</p>
       </ion-label>
     </ion-item>
   </ion-list>

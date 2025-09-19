@@ -58,7 +58,8 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Items: {{ orderItems.length }} | Total: {{ totalAmount | currency:'ARS':'symbol':'1.2-2' }}</ion-card-title>
+      <ion-card-title>Items: {{ orderItems.length }} | Total: {{ totalAmount | currency
+        }}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
@@ -67,12 +68,12 @@
             <ion-label>
               <h2>{{ item.article.name }}</h2>
               <p>SKU: {{ item.article.sku }}</p>
-              <p>Precio: {{ item.unitPrice | currency:'ARS':'symbol':'1.2-2' }}</p>
+              <p>Precio: {{ item.unitPrice | currency }}</p>
             </ion-label>
             <div class="quantity-controls">
               <ion-input class="quantity-input" color="primary" label-placement="floating" fill="outline" type="number"
                 [(ngModel)]="item.quantity" (ionChange)="updateQuantity(i)" min="1" maxlength="6"></ion-input>
-              <p class="subtotal">{{ (item.quantity * item.unitPrice) | currency:'ARS':'symbol':'1.2-2' }}</p>
+              <p class="subtotal">{{ (item.quantity * item.unitPrice) | currency }}</p>
             </div>
           </ion-item>
           <ion-item-options side="end">
