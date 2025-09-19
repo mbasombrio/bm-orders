@@ -63,7 +63,7 @@ export class BasketItem {
     date: Date | null;
     quantity: number | null;
     weight: number | null;
-    unitPrice: number | null;
+    unitPrice: number;
     size: string | null;
     design: string | null;
 
@@ -74,7 +74,7 @@ export class BasketItem {
         this.date = null;
         this.quantity = null;
         this.weight = null;
-        this.unitPrice = null;
+        this.unitPrice = 0;
         this.size = null;
         this.design = null;
     }
