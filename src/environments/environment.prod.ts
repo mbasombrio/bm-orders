@@ -5,5 +5,5 @@ export const environment = {
   url: "https://server.buhomanager.com:444/",
   useMultiClient: true,
   nameMultiClient: "tomas",
-  appVersion: '1.0.6'
+  appVersion: '1.0.8'
 };
