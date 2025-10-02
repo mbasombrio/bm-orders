@@ -18,6 +18,15 @@
       </ion-list>
 
       <ion-list>
+        <ion-menu-toggle auto-hide="false" *ngIf="canInstall()">
+          <ion-item (click)="installApp()" style="cursor: pointer;">
+            <ion-icon slot="start" name="cloud-download-outline"></ion-icon>
+            <ion-label>
+              Instalar App
+            </ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+
         <ion-menu-toggle auto-hide="false">
           <ion-item (click)="logout()" style="cursor: pointer;">
             <ion-icon slot="start" name="log-out-outline"></ion-icon>

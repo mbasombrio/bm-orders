@@ -1,9 +1,13 @@
 {
-  "name": "buho-orders",
-  "short_name": "bm-orders",
+  "name": "BM Orders - Sistema de Pedidos",
+  "short_name": "BM Orders",
+  "description": "Aplicación para gestión y registro de pedidos",
+  "theme_color": "#3880ff",
+  "background_color": "#ffffff",
   "display": "standalone",
-  "scope": "./",
-  "start_url": "./",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
   "icons": [
     {
       "src": "icons/icon-72x72.png",
