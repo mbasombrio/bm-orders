@@ -3,9 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { IonApp, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonRouterOutlet, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { cubeOutline, homeOutline, listOutline, logOutOutline } from 'ionicons/icons';
+import { cubeOutline, homeOutline, listOutline, logOutOutline, cloudDownloadOutline } from 'ionicons/icons';
 import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
+import { PwaService } from './services/pwa.service';
 
 @Component({
   selector: 'app-root',
@@ -25,9 +26,10 @@ export class AppComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private pwaService: PwaService
   ) {
-    addIcons({ homeOutline, listOutline, cubeOutline, logOutOutline });
+    addIcons({ homeOutline, listOutline, cubeOutline, logOutOutline, cloudDownloadOutline });
   }
 
   ngOnInit() {
@@ -36,6 +38,14 @@ export class AppComponent implements OnInit {
     ).subscribe((event: NavigationEnd) => {
       this.isLoginPage = event.urlAfterRedirects === '/login';
     });
+  }
+
+  canInstall(): boolean {
+    return this.pwaService.canInstall();
+  }
+
+  installApp() {
+    this.pwaService.install();
   }
 
   logout() {
