@@ -9,7 +9,7 @@ export const environment = {
   url: "http://localhost:9555/",
   useMultiClient: true,
   nameMultiClient: "tomas",
-  appVersion: '1.0.2'
+  appVersion: '1.1.0'
 };
 
 /*
