@@ -337,10 +337,12 @@ export class ArticlesPage {
     this.isLoading.set(true);
     this.loadingMessage.set('Importando sucursales...');
     try {
+      const { StorageService } = await import('src/app/services/storage.service');
+      const storage = inject(StorageService);
 
-      const user = localStorage.getItem('identity');
+      const user = await storage.get('identity');
       if (user) {
-        const identity: User = JSON.parse(user);
+        const identity: User = typeof user === 'string' ? JSON.parse(user) : user;
         const branches: Branch[] = identity.branches;
         const saveResult = await this.sqliteBranches.replaceAllbranches(branches);
         this.isLoading.set(false);

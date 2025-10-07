@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { IonButton, IonInput, IonItem, IonLabel, IonProgressBar } from '@ionic/angular/standalone';
 import { AuthStateService } from 'src/app/services/auth-state.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { StorageService } from 'src/app/services/storage.service';
 import { environment } from 'src/environments/environment';
 
 
@@ -49,7 +50,8 @@ export class LoginPage implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private authStateService: AuthStateService
+    private authStateService: AuthStateService,
+    private storage: StorageService
   ) { }
 
   ngOnInit() {
@@ -57,9 +59,9 @@ export class LoginPage implements OnInit {
     this.initializeForm();
   }
 
-  initializeForm() {
+  async initializeForm() {
     if (this.checkMulticlient()) {
-      let client = localStorage.getItem('client') || "";
+      let client = await this.storage.get('client') || "";
       this.client = client;
       this.loginForm = new FormGroup({
         client: new FormControl({ value: client, disabled: this.loading }, [
@@ -74,7 +76,7 @@ export class LoginPage implements OnInit {
       });
     } else {
       // Si no es multicliente, usar el nameMultiClient por defecto
-      localStorage.setItem('client', environment.nameMultiClient);
+      await this.storage.set('client', environment.nameMultiClient);
       this.loginForm = new FormGroup({
         user: new FormControl({ value: "", disabled: this.loading }, [
           Validators.required,
@@ -115,7 +117,7 @@ export class LoginPage implements OnInit {
     return this.loginForm.controls[controlName].hasError(errorName);
   }
 
-  onLogin() {
+  async onLogin() {
     if (!this.loginForm) {
       console.error('Form not initialized');
       return;
@@ -135,35 +137,35 @@ export class LoginPage implements OnInit {
 
     if (this.checkMulticlient()) {
       client = this.loginForm.controls['client'].value;
-      localStorage.setItem('client', client.toLowerCase());
+      await this.storage.set('client', client.toLowerCase());
     } else {
       // Si no es multicliente, usar el nameMultiClient del environment
       client = environment.nameMultiClient;
-      localStorage.setItem('client', client);
+      await this.storage.set('client', client);
     }
 
     // Usar el método de login observable para compatibilidad con tu sistema
-    this.authService.login(username, password, client).subscribe({
-      next: (response) => {
+    (await this.authService.login(username, password, client)).subscribe({
+      next: async (response) => {
         // Procesar respuesta del login
         try {
-          // Guardar token y expiración directamente en localStorage
+          // Guardar token y expiración
           const token = response.headers.get('jwt-token');
           const tokenExpiration = response.headers.get('token-expiration');
 
           if (token && tokenExpiration) {
             const timeExpiration = Number(tokenExpiration) + Date.now();
-            localStorage.setItem('token', token);
-            localStorage.setItem('token-expiration', timeExpiration.toString());
+            await this.storage.set('token', token);
+            await this.storage.set('token-expiration', timeExpiration.toString());
           }
 
           // Guardar identidad del usuario
-          localStorage.setItem('identity', response.body);
+          await this.storage.set('identity', response.body);
 
           this.setLoading(false);
 
           // Actualizar el signal del AuthStateService para reflejar el nuevo estado
-          this.authStateService.updateTokenSignal();
+          await this.authStateService.updateTokenSignal();
 
           // Navegar inmediatamente - el signal se actualizará automáticamente
           this.router.navigate(['/dashboard']);

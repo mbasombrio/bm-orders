@@ -1,11 +1,15 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, signal, inject } from '@angular/core';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthStateService {
-  // Signal para verificar si hay token en localStorage
+  private storage = inject(StorageService);
+
+  // Signal para verificar si hay token
   private tokenSignal = signal<string | null>(null);
+  private expirationSignal = signal<number | null>(null);
 
   // Computed signal que determina si está autenticado basado en el token
   isAuthenticated = computed(() => {
@@ -13,13 +17,12 @@ export class AuthStateService {
     if (!token || token === 'null') return false;
 
     // Verificar también que no haya expirado
-    const expiration = localStorage.getItem('token-expiration');
+    const expiration = this.expirationSignal();
     if (!expiration) return false;
 
-    const expirationTime = parseInt(expiration);
     const now = Date.now();
 
-    return now < expirationTime;
+    return now < expiration;
   });
 
   constructor() {
@@ -27,16 +30,18 @@ export class AuthStateService {
     this.updateTokenSignal();
   }
 
-  updateTokenSignal() {
-    const token = localStorage.getItem('token');
+  async updateTokenSignal() {
+    const token = await this.storage.get('token');
+    const expiration = await this.storage.get('token-expiration');
     this.tokenSignal.set(token);
+    this.expirationSignal.set(expiration ? parseInt(expiration) : null);
   }
 
-  clearAuth() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('token-expiration');
-    localStorage.removeItem('identity');
-    localStorage.removeItem('client');
-    this.updateTokenSignal();
+  async clearAuth() {
+    await this.storage.remove('token');
+    await this.storage.remove('token-expiration');
+    await this.storage.remove('identity');
+    await this.storage.remove('client');
+    await this.updateTokenSignal();
   }
 }
