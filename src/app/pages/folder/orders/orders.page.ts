@@ -458,13 +458,15 @@ export class OrdersPage implements OnInit, OnDestroy {
     });
     await loading.present();
 
+    const user = await this.authService.getIdentity();
+
     const cart: Carrito = {
       ...new Carrito(),
       listadoArticulos: order.items.map(item => ({
         ...item,
         unitPrice: toLong(item.unitPrice * 100),
       })),
-      user: this.authService.getIdentity() || null,
+      user: user || null,
       customer: order.customer,
       customerDelivery: order.customerDelivery,
       branch: order.branch,

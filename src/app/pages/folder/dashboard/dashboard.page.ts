@@ -5,6 +5,7 @@ import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle
 import { addIcons } from 'ionicons';
 import { appsOutline, appsSharp, bugOutline, bugSharp, cartOutline, cartSharp, cubeOutline, cubeSharp, logOutOutline, logOutSharp } from 'ionicons/icons';
 import { AuthStateService } from 'src/app/services/auth-state.service';
+import { StorageService } from 'src/app/services/storage.service';
 import { environment } from 'src/environments/environment';
 
 
@@ -30,31 +31,32 @@ import { environment } from 'src/environments/environment';
 export class DashboardPage implements OnInit {
   currentYear = new Date().getFullYear();
   environment = environment;
-
-
-  get displayClient(): string {
-    if (environment.useMultiClient) {
-      const client = localStorage.getItem('client') || 'Plan Nube';
-      return client;
-    } else {
-      return environment.nameMultiClient || 'Plan Nube';
-    }
-  }
+  clientName: string = 'Plan Nube';
 
   constructor(
     private router: Router,
-    private authStateService: AuthStateService
+    private authStateService: AuthStateService,
+    private storage: StorageService
   ) {
     addIcons({ appsOutline, appsSharp, cartOutline, cartSharp, cubeOutline, cubeSharp, logOutOutline, logOutSharp, bugOutline, bugSharp });
   }
 
-  ngOnInit() {
-
+  async ngOnInit() {
+    if (environment.useMultiClient) {
+      const client = await this.storage.get('client');
+      this.clientName = client || 'Plan Nube';
+    } else {
+      this.clientName = environment.nameMultiClient || 'Plan Nube';
+    }
   }
 
-  logout() {
+  get displayClient(): string {
+    return this.clientName;
+  }
+
+  async logout() {
     // Limpiar tokens usando el servicio
-    this.authStateService.clearAuth();
+    await this.authStateService.clearAuth();
 
     // Redirigir a login
     this.router.navigate(['/login']);

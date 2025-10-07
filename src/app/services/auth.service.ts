@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { User } from '../models/user';
+import { StorageService } from './storage.service';
 
 // Interfaces para compatibilidad con tu sistema
 
@@ -17,6 +18,7 @@ export class AuthService {
   private readonly IDENTITY_KEY = 'identity';
   public user: User | null = null;
   http = inject(HttpClient);
+  storage = inject(StorageService);
 
   // URL del backend usando environment
   private readonly API_URL = environment.url;
@@ -30,16 +32,16 @@ export class AuthService {
   }
 
 
-  private isTokenValid(token: string | null): boolean {
+  async isTokenValid(token: string | null): Promise<boolean> {
     if (!token || token === 'null') return false;
 
     try {
       // Verificar expiración del token
-      const expiration = localStorage.getItem('token-expiration');
+      const expiration = await this.storage.get('token-expiration');
       if (expiration) {
         const expirationTime = JSON.parse(expiration);
         if (Date.now() > expirationTime) {
-          this.removeToken();
+          await this.removeToken();
           return false;
         }
       }
@@ -50,7 +52,7 @@ export class AuthService {
   }
 
   // Método de login compatible con tu sistema
-  login(username: string, password: string, client?: string): Observable<any> {
+  async login(username: string, password: string, client?: string): Promise<Observable<any>> {
     const user = new User();
     user.userName = username;
     user.password = password;
@@ -58,7 +60,7 @@ export class AuthService {
     // Usar cliente proporcionado o el default del environment
     const clientToUse = client || environment.nameMultiClient;
     user.client = clientToUse.toLowerCase();
-    localStorage.setItem('client', user.client);
+    await this.storage.set('client', user.client);
 
     // Descomenta esta línea cuando tengas el backend real:
     return this.http.post<any>(`${this.API_URL}loginService`, user, {
@@ -68,26 +70,26 @@ export class AuthService {
   }
 
 
-  logout(): void {
-    this.removeToken();
-    localStorage.removeItem(this.IDENTITY_KEY);
-    localStorage.removeItem('client');
-    localStorage.removeItem('menuPreferences');
-    sessionStorage.removeItem('previousUser');
+  async logout(): Promise<void> {
+    await this.removeToken();
+    await this.storage.remove(this.IDENTITY_KEY);
+    await this.storage.remove('client');
+    await this.storage.remove('menuPreferences');
+    await this.storage.remove('previousUser');
     this.user = null;
     this.isAuthenticatedSubject.next(false);
   }
 
-  getToken(): string | null {
-    const token = localStorage.getItem(this.TOKEN_KEY);
+  async getToken(): Promise<string | null> {
+    const token = await this.storage.get(this.TOKEN_KEY);
     return token && token !== 'null' ? token : null;
   }
 
-  getIdentity(): User | null {
-    const identity = localStorage.getItem(this.IDENTITY_KEY);
+  async getIdentity(): Promise<User | null> {
+    const identity = await this.storage.get(this.IDENTITY_KEY);
     if (identity && identity !== 'null') {
       try {
-        return JSON.parse(identity);
+        return typeof identity === 'string' ? JSON.parse(identity) : identity;
       } catch (error) {
         return null;
       }
@@ -95,34 +97,33 @@ export class AuthService {
     return null;
   }
 
-  getCurrentUser(): User | null {
-    return this.user || this.getIdentity();
+  async getCurrentUser(): Promise<User | null> {
+    return this.user || await this.getIdentity();
   }
 
-  saveToken(token: string, tokenExpiration: string): void {
+  async saveToken(token: string, tokenExpiration: string): Promise<void> {
     console.log('saveToken llamado con token:', !!token, 'expiration:', tokenExpiration);
-    localStorage.setItem(this.TOKEN_KEY, token);
-    localStorage.setItem('token-expiration', tokenExpiration);
-
+    await this.storage.set(this.TOKEN_KEY, token);
+    await this.storage.set('token-expiration', tokenExpiration);
   }
 
-  removeToken(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem('token-expiration');
+  async removeToken(): Promise<void> {
+    await this.storage.remove(this.TOKEN_KEY);
+    await this.storage.remove('token-expiration');
   }
 
   // Método para verificar permisos (compatible con tu sistema)
-  showMenu(key: string): boolean {
-    const login = localStorage.getItem(this.IDENTITY_KEY);
+  async showMenu(key: string): Promise<boolean> {
+    const login = await this.storage.get(this.IDENTITY_KEY);
     if (!login) {
       return false;
     }
 
     try {
-      // Verificar menuPreferences en localStorage
-      const menuPreferences = localStorage.getItem("menuPreferences");
+      // Verificar menuPreferences
+      const menuPreferences = await this.storage.get("menuPreferences");
       if (menuPreferences) {
-        const preferences = JSON.parse(menuPreferences);
+        const preferences = typeof menuPreferences === 'string' ? JSON.parse(menuPreferences) : menuPreferences;
         const preference = preferences.find((item: any) => item.key === "menu" && item.value === key);
 
         if (preference && preference.value2 === "false") {
@@ -131,7 +132,7 @@ export class AuthService {
       }
 
       // Verificar restricciones del usuario
-      const user = JSON.parse(login);
+      const user = typeof login === 'string' ? JSON.parse(login) : login;
       if (user && user.hasOwnProperty("restrictions") && user.restrictions) {
         if (!user.restrictions[key]) {
           return true;
@@ -146,8 +147,8 @@ export class AuthService {
     }
   }
 
-  isBasicUser(): boolean {
-    const identity = this.getIdentity();
+  async isBasicUser(): Promise<boolean> {
+    const identity = await this.getIdentity();
     return identity?.role === 2;
   }
 }
