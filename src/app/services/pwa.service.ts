@@ -42,13 +42,34 @@ export class PwaService {
     });
 
     // Listen for available updates
-    this.swUpdate.versionUpdates.subscribe(event => {
+    this.swUpdate.versionUpdates.subscribe(async event => {
       if (event.type === 'VERSION_READY') {
-        console.log('Nueva versión disponible, recargando...');
-        // Reload automatically
-        window.location.reload();
+        console.log('Nueva versión disponible');
+        await this.showUpdateNotification();
       }
     });
+  }
+
+  private async showUpdateNotification(): Promise<void> {
+    const toast = await this.toastController.create({
+      message: '¡Nueva versión disponible! Toca aquí para actualizar',
+      position: 'top',
+      color: 'success',
+      duration: 0, // No se cierra automáticamente
+      buttons: [
+        {
+          text: 'Actualizar',
+          handler: () => {
+            window.location.reload();
+          }
+        },
+        {
+          text: 'Después',
+          role: 'cancel'
+        }
+      ]
+    });
+    await toast.present();
   }
 
   private isIos(): boolean {

@@ -2,6 +2,8 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import packageJson from '../../package.json';
+
 export const environment = {
   production: false,
   product: "retail",
@@ -9,7 +11,7 @@ export const environment = {
   url: "http://localhost:9555/",
   useMultiClient: true,
   nameMultiClient: "tomas",
-  appVersion: '1.2.1'
+  appVersion: packageJson.version
 };
 
 /*

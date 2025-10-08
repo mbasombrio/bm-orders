@@ -1,3 +1,5 @@
+import packageJson from '../../package.json';
+
 export const environment = {
   production: true,
   product: "retail",
@@ -5,5 +7,5 @@ export const environment = {
   url: "https://server.buhomanager.com:444/",
   useMultiClient: true,
   nameMultiClient: "tomas",
-  appVersion: '1.2.1'
+  appVersion: packageJson.version
 };
