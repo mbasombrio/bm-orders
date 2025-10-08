@@ -15,6 +15,7 @@ import { ItemsService } from 'src/app/services/items.service';
 import { SqliteArticlesService } from 'src/app/services/sqlite-articles.service';
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
 import { SqliteBranchService } from 'src/app/services/sqllite-branch.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-articles',
@@ -50,6 +51,7 @@ export class ArticlesPage {
   clientsService = inject(ClientsService);
   toastController = inject(ToastController);
   alertController = inject(AlertController);
+  storageService = inject(StorageService);
 
   constructor() {
     addIcons({
@@ -337,10 +339,7 @@ export class ArticlesPage {
     this.isLoading.set(true);
     this.loadingMessage.set('Importando sucursales...');
     try {
-      const { StorageService } = await import('src/app/services/storage.service');
-      const storage = inject(StorageService);
-
-      const user = await storage.get('identity');
+      const user = await this.storageService.get('identity');
       if (user) {
         const identity: User = typeof user === 'string' ? JSON.parse(user) : user;
         const branches: Branch[] = identity.branches;

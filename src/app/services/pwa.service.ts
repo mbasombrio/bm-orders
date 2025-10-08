@@ -1,5 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, ApplicationRef } from '@angular/core';
 import { ToastController, AlertController } from '@ionic/angular';
+import { SwUpdate } from '@angular/service-worker';
+import { interval, concat } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -8,11 +11,43 @@ export class PwaService {
   private promptEvent: any;
   private toastController = inject(ToastController);
   private alertController = inject(AlertController);
+  private swUpdate = inject(SwUpdate);
+  private appRef = inject(ApplicationRef);
 
   constructor() {
     window.addEventListener('beforeinstallprompt', (event: any) => {
       event.preventDefault();
       this.promptEvent = event;
+    });
+
+    // Auto-update Service Worker
+    this.checkForUpdates();
+  }
+
+  private checkForUpdates(): void {
+    if (!this.swUpdate.isEnabled) {
+      console.log('Service Worker no está habilitado');
+      return;
+    }
+
+    // Check for updates every 2 minutes
+    const appIsStable$ = this.appRef.isStable.pipe(first(isStable => isStable === true));
+    const every2Minutes$ = interval(2 * 60 * 1000);
+    const every2MinutesOnceAppIsStable$ = concat(appIsStable$, every2Minutes$);
+
+    every2MinutesOnceAppIsStable$.subscribe(() => {
+      this.swUpdate.checkForUpdate().then(() => {
+        console.log('Verificando actualizaciones...');
+      });
+    });
+
+    // Listen for available updates
+    this.swUpdate.versionUpdates.subscribe(event => {
+      if (event.type === 'VERSION_READY') {
+        console.log('Nueva versión disponible, recargando...');
+        // Reload automatically
+        window.location.reload();
+      }
     });
   }
 

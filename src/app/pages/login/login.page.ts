@@ -54,9 +54,9 @@ export class LoginPage implements OnInit {
     private storage: StorageService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     // Primero inicializar el formulario
-    this.initializeForm();
+    await this.initializeForm();
   }
 
   async initializeForm() {

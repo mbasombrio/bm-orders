@@ -24,7 +24,7 @@
           </div>
         </div>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+        <form *ngIf="loginForm" [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
           <!-- Client field -->
           <div class="form-field" *ngIf="checkMulticlient()">
             <ion-item class="full-width margin-10">

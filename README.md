@@ -161,3 +161,88 @@ bm-orders/
 - Sincronización bidireccional
 - Manejo de conflictos
 - Reintentos automáticos
+
+## Service Worker y Actualizaciones Automáticas
+
+### ¿Cómo Funciona?
+
+La aplicación utiliza un **Service Worker** de Angular que proporciona funcionalidad PWA (Progressive Web App) y gestiona actualizaciones automáticas sin intervención del usuario.
+
+### Estrategia de Actualización
+
+#### 1. Verificación Periódica
+- El Service Worker verifica actualizaciones cada **2 minutos** automáticamente
+- La verificación se activa después de que la aplicación está estable (30 segundos)
+- No requiere que el usuario refresque el navegador
+
+#### 2. Detección de Nueva Versión
+Cuando se detecta una nueva versión:
+1. El Service Worker descarga los nuevos archivos en segundo plano
+2. Una vez descargada, la aplicación **se recarga automáticamente**
+3. El usuario obtiene la versión actualizada sin acción manual
+
+#### 3. Caché de Archivos
+
+**Archivos con Caché:**
+- JavaScript bundles (`*.js`)
+- Hojas de estilo (`*.css`)
+- Imágenes y assets (`*.png`, `*.svg`, `*.jpg`, etc.)
+
+**Archivos SIN Caché:**
+- `index.html` - Siempre se obtiene la versión más reciente
+- `ngsw.json` - Archivo de control del Service Worker (contiene hash de versión)
+
+### Proceso de Deploy y Actualización
+
+#### Paso 1: Build y Upload
+```bash
+./upload-orders.sh
+```
+
+Este script:
+1. Genera el build de producción
+2. Sube todos los archivos a S3
+3. Configura headers `no-cache` para `index.html` y `ngsw.json`
+4. Muestra recordatorio para invalidar CloudFront
+
+#### Paso 2: Invalidación de CloudFront
+Solicitar al equipo de DevOps/AWS que ejecute:
+```bash
+aws cloudfront create-invalidation --distribution-id XXXXXX --paths "/*"
+```
+
+#### Paso 3: Actualización Automática en Clientes
+- En menos de **2 minutos**, todos los usuarios activos obtienen la nueva versión
+- La app se recarga automáticamente cuando detecta la actualización
+- No se requiere Ctrl+F5 ni refrescar manualmente
+
+### Configuración Técnica
+
+**Service Worker Config:** `ngsw-config.json`
+```json
+{
+  "app": {
+    "installMode": "prefetch",  // Descarga archivos principales inmediatamente
+    "files": ["/*.css", "/*.js"]
+  },
+  "assets": {
+    "installMode": "lazy",      // Descarga assets bajo demanda
+    "updateMode": "prefetch"     // Pre-descarga assets en actualizaciones
+  }
+}
+```
+
+**Auto-Update Service:** `src/app/services/pwa.service.ts`
+- Implementa `SwUpdate` de Angular
+- Verifica actualizaciones cada 2 minutos con `interval(120000)`
+- Escucha eventos `VERSION_READY` para recargar automáticamente
+
+### Troubleshooting
+
+**La aplicación no se actualiza:**
+1. Verificar que el Service Worker esté activo: Abrir DevTools → Application → Service Workers
+2. Comprobar que se corrió la invalidación de CloudFront
+3. Forzar actualización manual: `Ctrl+Shift+R` (Windows) o `Cmd+Shift+R` (Mac)
+
+**Deshabilitar Service Worker en desarrollo:**
+El Service Worker solo está activo en producción (`!isDevMode()`). En desarrollo local no interfiere con hot-reload.
