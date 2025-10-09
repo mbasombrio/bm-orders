@@ -190,12 +190,10 @@ export class OrdersPage implements OnInit, OnDestroy {
   }
 
   viewOrderDetails(order: any) {
-    console.log('Ver detalles de la orden:', order);
     // Aquí puedes implementar la navegación a los detalles de la orden
   }
 
   async editOrder(order: BasketOrder) {
-    console.log('Order to edit:', order);
     this.orderEditDataService.setOrder(order);
     this.router.navigate(['add-order']);
   }
@@ -438,10 +436,11 @@ export class OrdersPage implements OnInit, OnDestroy {
         },
         {
           text: 'Enviar',
-          handler: () => {
-            // Implement send logic here
+          handler: async () => {
+            await alert.dismiss();
+            // Wait a bit to ensure alert is fully dismissed
+            await new Promise(resolve => setTimeout(resolve, 100));
             this.saveOrder(order);
-            this.showToast(`Pedido #${order.id} enviado (funcionalidad pendiente)`);
           }
         }
       ]
@@ -450,33 +449,59 @@ export class OrdersPage implements OnInit, OnDestroy {
   }
 
   async saveOrder(order: BasketOrder) {
+    let loading: HTMLIonLoadingElement | null = null;
+    try {
+      const loadingPromise = this.loadingController.create({
+        message: 'Guardando pedido...',
+      });
 
-    console.log(order)
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Loading timeout')), 3000)
+      );
 
-    const loading = await this.loadingController.create({
-      message: 'Guardando pedido...',
-    });
-    await loading.present();
-
-    const user = await this.authService.getIdentity();
-
-    const cart: Carrito = {
-      ...new Carrito(),
-      listadoArticulos: order.items.map(item => ({
-        ...item,
-        unitPrice: toLong(item.unitPrice * 100),
-      })),
-      user: user || null,
-      customer: order.customer,
-      customerDelivery: order.customerDelivery,
-      branch: order.branch,
-      deliveryAmount: order.deliveryAmount,
-      observation: order.observation,
-      state: this.status_Pending
+      loading = await Promise.race([loadingPromise, timeoutPromise]);
+      await loading.present();
+    } catch (error) {
+      console.error('Error creating/presenting loading (continuing anyway):', error);
+      loading = null;
     }
+
+    let user;
+    try {
+      user = await this.authService.getIdentity();
+    } catch (error) {
+      console.error('Error getting user identity:', error);
+      if (loading) await loading.dismiss();
+      this.showToast('Error al obtener información del usuario');
+      return;
+    }
+
+    let cart: Carrito;
+    try {
+      cart = {
+        ...new Carrito(),
+        listadoArticulos: order.items.map(item => ({
+          ...item,
+          unitPrice: toLong(item.unitPrice * 100),
+        })),
+        user: user || null,
+        customer: order.customer,
+        customerDelivery: order.customerDelivery,
+        branch: order.branch,
+        deliveryAmount: order.deliveryAmount,
+        observation: order.observation,
+        state: this.status_Pending
+      }
+    } catch (error) {
+      console.error('Error creating cart:', error);
+      if (loading) await loading.dismiss();
+      this.showToast('Error al preparar el pedido');
+      return;
+    }
+
     this.basketService.makeOrder(cart).subscribe({
       next: async () => {
-        await loading.dismiss();
+        if (loading) await loading.dismiss();
         try {
           if (order.id) {
             await this.sqliteOrdersService.deleteOrder(order.id);
@@ -495,7 +520,8 @@ export class OrdersPage implements OnInit, OnDestroy {
         }
       },
       error: async (err) => {
-        await loading.dismiss();
+        console.error('Error sending order:', err);
+        if (loading) await loading.dismiss();
         this.showToast(`Error al guardar el pedido`);
       }
     })

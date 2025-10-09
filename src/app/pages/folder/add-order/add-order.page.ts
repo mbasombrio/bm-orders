@@ -92,7 +92,6 @@ export class AddOrderPage implements OnInit {
 
   ionViewWillEnter() {
     this.orderToEdit = this.orderEditDataService.getOrder();
-    console.log('Order retrieved from service:', this.orderToEdit);
     if (this.orderToEdit) {
       this.selectedCustomerId = this.orderToEdit.customer?.id ?? null;
       this.selectedBranchId = this.orderToEdit.branch?.id ?? null;
@@ -330,9 +329,10 @@ export class AddOrderPage implements OnInit {
         await this.ordersManagerService.createOrder(newOrder);
         this.presentAlert('Éxito', 'Pedido guardado correctamente.');
       }
-      this.orderEditDataService.clearOrder(); // Clear the order after saving/updating
+      this.orderEditDataService.clearOrder();
       this.router.navigate(['/orders']);
     } catch (error) {
+      console.error('Error saving order:', error);
       this.presentAlert('Error', 'Hubo un problema al guardar el pedido.');
     }
   }
