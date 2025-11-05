@@ -17,6 +17,7 @@ import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
 import { SqliteBranchService } from 'src/app/services/sqllite-branch.service';
 import { ArticleSearchResultModalComponent } from './article-search-result-modal.component';
 import { CustomerDetailsModalComponent } from './customer-details-modal.component';
+import { CustomerSelectionModalComponent } from './customer-selection-modal.component';
 
 @Component({
   selector: 'app-add-order',
@@ -347,6 +348,28 @@ export class AddOrderPage implements OnInit {
     this.orderItems = [];
     this.totalAmount = 0;
     this.orderToEdit = null;
+  }
+
+  async openCustomerModal() {
+    const modal = await this.modalController.create({
+      component: CustomerSelectionModalComponent,
+      componentProps: {
+        customers: this.customers
+      }
+    });
+
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+      this.selectedCustomerId = data.id;
+      this.onCustomerChange();
+    }
+  }
+
+  getSelectedCustomerName(): string {
+    const customer = this.customers.find(c => c.id === this.selectedCustomerId);
+    return customer ? `${customer.name} ${customer.lastName}` : '';
   }
 
   async showCustomerDetails() {
