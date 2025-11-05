@@ -497,4 +497,34 @@
   ion-textarea.ion-valid {
     --highlight-color: var(--ion-color-primary);
   }
+
+  .custom-select-wrapper {
+    width: 100%;
+    cursor: pointer;
+
+    ion-label {
+      margin-bottom: 8px;
+    }
+
+    .custom-select-value {
+      background: #f8f9fa;
+      padding: 16px;
+      border-radius: 10px;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      transition: all 0.2s ease;
+
+
+      span {
+        color: #1a202c;
+        font-weight: 500;
+
+        &.placeholder {
+          color: #9ca3af;
+          font-weight: 400;
+        }
+      }
+    }
+  }
 }

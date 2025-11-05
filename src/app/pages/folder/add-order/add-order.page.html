@@ -11,11 +11,13 @@
   <ion-card>
     <ion-card-content>
       <ion-item>
-        <ion-select [(ngModel)]="selectedCustomerId" (ionChange)="onCustomerChange()" label="Cliente" label-placement="stacked"
-          placeholder="Seleccione un cliente">
-          <ion-select-option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }} {{
-            customer.lastName }}</ion-select-option>
-        </ion-select>
+        <div class="custom-select-wrapper" (click)="openCustomerModal()">
+          <ion-label position="stacked">Cliente</ion-label>
+          <div class="custom-select-value">
+            <span *ngIf="!selectedCustomerId" class="placeholder">Seleccione un cliente</span>
+            <span *ngIf="selectedCustomerId">{{ getSelectedCustomerName() }}</span>
+          </div>
+        </div>
         <ion-button *ngIf="selectedCustomerId" (click)="showCustomerDetails()" slot="end" fill="solid">
           <ion-icon name="eye-outline"></ion-icon>
         </ion-button>
