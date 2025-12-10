@@ -1,8 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, retry, timeout, catchError, throwError } from 'rxjs';
+import { Observable, retry, timeout, catchError, throwError, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Article } from '../models/article';
+import { StockService } from './stock.service';
+import { StockFilter } from '../models/stock';
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +12,12 @@ import { Article } from '../models/article';
 export class ItemsService {
 
   private http = inject(HttpClient);
+  private stockService = inject(StockService);
   private service = signal<string>(`${environment.url}itemService`)
 
-  // Configuración de timeouts y reintentos
-  private readonly TIMEOUT_MS = 120000; // 2 minutos
+  private readonly TIMEOUT_MS = 120000;
   private readonly MAX_RETRIES = 3;
-  private readonly RETRY_DELAY = 2000; // 2 segundos entre reintentos
+  private readonly RETRY_DELAY = 2000;
 
   getArticles(): Observable<Article[]> {
     return this.http.get<Article[]>(`${this.service()}/importItems`, {
@@ -73,18 +75,40 @@ export class ItemsService {
     );
   }
 
+  getArticleStock(sku: string, depositId?: number): Observable<Article> {
+    const filter = new StockFilter();
+    filter.sku = sku;
+    filter.page = 1;
+
+    if (depositId != null) {
+      filter.deposit = { id: depositId, name: null };
+    }
+
+    return this.stockService.getListStock(filter).pipe(
+      map(response => {
+        const stocks = response.rows;
+        const totalStock = stocks.reduce((sum, stock) => sum + (Number(stock.newStock) || 0), 0);
+
+        return {
+          sku: sku,
+          unitInStock: totalStock
+        } as Article;
+      }),
+      timeout(2000),
+      catchError(this.handleError.bind(this))
+    );
+  }
+
   private shouldRetry(error: any): boolean {
-    // Reintentar solo en casos específicos
     if (error.name === 'TimeoutError') {
       return true;
     }
-    
+
     if (error instanceof HttpErrorResponse) {
-      // Reintentar en errores de red/servidor temporal
       const retryableStatusCodes = [0, 408, 429, 500, 502, 503, 504];
       return retryableStatusCodes.includes(error.status);
     }
-    
+
     return false;
   }
 

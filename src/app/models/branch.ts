@@ -13,6 +13,7 @@ export class Branch {
 	public responsible: string;
    public cuit: string;
    public deposits: Deposit[];
+   public depositSale?: DepositSale;
    
    constructor(){
       this.id = 0;
@@ -40,4 +41,9 @@ export class BranchFilter{
       this.responsible = '';
       this.page = 1;
    }
+}
+
+export interface DepositSale {
+   id: number;
+   name: string
 }
