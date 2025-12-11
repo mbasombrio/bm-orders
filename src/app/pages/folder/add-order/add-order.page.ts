@@ -15,6 +15,7 @@ import { OrdersManagerService } from 'src/app/services/orders-manager.service';
 import { SqliteArticlesService } from 'src/app/services/sqlite-articles.service';
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
 import { SqliteBranchService } from 'src/app/services/sqllite-branch.service';
+import { ItemsService } from 'src/app/services/items.service';
 import { ArticleSearchResultModalComponent } from './article-search-result-modal.component';
 import { CustomerDetailsModalComponent } from './customer-details-modal.component';
 import { CustomerSelectionModalComponent } from './customer-selection-modal.component';
@@ -77,7 +78,8 @@ export class AddOrderPage implements OnInit {
     private sqliteBranchService: SqliteBranchService,
     private ordersManagerService: OrdersManagerService,
     private router: Router,
-    private orderEditDataService: OrderEditDataService
+    private orderEditDataService: OrderEditDataService,
+    private itemsService: ItemsService
   ) {
     addIcons({
        trash,
@@ -133,6 +135,11 @@ export class AddOrderPage implements OnInit {
   }
 
   async searchArticles() {
+    if (!this.selectedBranchId) {
+      this.presentAlert('Sucursal requerida', 'Debe seleccionar una sucursal antes de buscar artículos.');
+      return;
+    }
+
     if (!this.searchQuery.trim()) {
       return;
     }
@@ -149,15 +156,36 @@ export class AddOrderPage implements OnInit {
   }
 
   async promptForQuantity(article: Article) {
+    let stock = 0;
+    let stockMessage = 'Consultando stock...';
+    let stockError = false;
+
+    try {
+      const branch = this.branches.find(b => b.id === this.selectedBranchId);
+      const depositId = branch?.depositSale!.id;
+
+      const articleData = await this.itemsService.getArticleStock(article.sku, depositId).toPromise();
+      stock = articleData?.unitInStock || 0;
+      stockMessage = `Stock disponible: ${stock}`;
+    } catch (error) {
+      console.error('Error al obtener stock:', error);
+      stockMessage = 'No se pudo obtener el stock';
+      stockError = true;
+    }
+
     const alert = await this.alertController.create({
       header: 'Cantidad',
-      message: `Ingrese la cantidad para ${article.name}`,
+      subHeader: article.name,
       inputs: [
         {
           name: 'quantity',
           type: 'number',
           min: 1,
-          value: 1
+          value: 1,
+          placeholder: 'Cantidad',
+          attributes: {
+            id: 'quantity-input'
+          }
         }
       ],
       buttons: [
@@ -174,10 +202,46 @@ export class AddOrderPage implements OnInit {
             }
           }
         }
-      ]
+      ],
+      cssClass: 'quantity-alert'
     });
 
     await alert.present();
+
+    setTimeout(() => {
+      const alertElement = document.querySelector('.quantity-alert');
+      if (alertElement) {
+        const inputWrapper = alertElement.querySelector('.alert-input-group');
+        if (inputWrapper) {
+          const stockDiv = document.createElement('div');
+          stockDiv.className = 'stock-message-container';
+          stockDiv.innerHTML = `<span id="stock-message">${stockMessage}</span>`;
+          inputWrapper.parentElement?.insertBefore(stockDiv, inputWrapper);
+
+          const quantityInput = alertElement.querySelector('#quantity-input') as HTMLInputElement;
+          const stockMessageEl = alertElement.querySelector('#stock-message') as HTMLElement;
+
+          if (quantityInput && stockMessageEl) {
+            quantityInput.addEventListener('input', () => {
+              if (stockError) {
+                stockMessageEl.style.color = 'orange';
+                stockMessageEl.textContent = stockMessage;
+                return;
+              }
+
+              const currentQuantity = parseInt(quantityInput.value, 10) || 0;
+              if (currentQuantity > stock && stock > 0) {
+                stockMessageEl.style.color = 'red';
+                stockMessageEl.textContent = `Stock disponible: ${stock}`;
+              } else {
+                stockMessageEl.style.color = '';
+                stockMessageEl.textContent = `Stock disponible: ${stock}`;
+              }
+            });
+          }
+        }
+      }
+    }, 100);
   }
 
   async presentArticleSelectionModal(articles: Article[]) {
