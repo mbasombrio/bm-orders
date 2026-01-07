@@ -20,7 +20,7 @@ export class ItemsService {
   private readonly RETRY_DELAY = 2000;
 
   getArticles(): Observable<Article[]> {
-    return this.http.get<Article[]>(`${this.service()}/importItems`, {
+    return this.http.get<Article[]>(`${this.service()}/importItemsPreventa`, {
       // Configuraciones HTTP para grandes datasets
       headers: {
         'Accept': 'application/json',
