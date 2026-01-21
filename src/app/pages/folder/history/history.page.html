@@ -1,0 +1,182 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Historial</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Historial</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Formulario de Filtros -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Filtros</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="form">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" sizeMd="6">
+              <ion-item>
+                <ion-label position="stacked">Periodo</ion-label>
+                <ion-select formControlName="period">
+                  @for (period of periods; track period.value) {
+                    <ion-select-option [value]="period.value">{{ period.label }}</ion-select-option>
+                  }
+                </ion-select>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12" sizeMd="6">
+              <ion-item>
+                <ion-label position="stacked">Estado</ion-label>
+                <ion-select formControlName="state">
+                  <ion-select-option value="TODOS">Todos</ion-select-option>
+                  <ion-select-option value="pending">Pendiente</ion-select-option>
+                  <ion-select-option value="invoiced">Facturado</ion-select-option>
+                  <ion-select-option value="canceled">Cancelado</ion-select-option>
+                  <ion-select-option value="Approved">Aprobado</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          @if (form.get('period')?.value === 'custom') {
+            <ion-row>
+              <ion-col size="12" sizeMd="6">
+                <ion-item>
+                  <ion-label position="stacked">Fecha Desde</ion-label>
+                  <ion-input type="date" formControlName="dateFrom"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col size="12" sizeMd="6">
+                <ion-item>
+                  <ion-label position="stacked">Fecha Hasta</ion-label>
+                  <ion-input type="date" formControlName="dateTo"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          }
+          <ion-row>
+            <ion-col size="12">
+              <ion-button expand="block" (click)="find()" [disabled]="loading()">
+                @if (loading()) {
+                  <ion-spinner name="crescent"></ion-spinner>
+                } @else {
+                  Buscar
+                }
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Resumen -->
+  @if (list.length > 0) {
+    <ion-card>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" style="text-align: center; padding: 10px 0;">
+              <p style="margin: 0; color: gray; font-size: 0.9rem;">Total Vendido</p>
+              <p style="margin: 0; font-size: 2rem; font-weight: bold; color: #2dd36f;">{{ formatCurrency(totalAmount) }}</p>
+            </ion-col>
+          </ion-row>
+          <ion-row style="border-top: 1px solid #e0e0e0; padding-top: 10px;">
+            <ion-col size="6" style="text-align: center;">
+              <p style="margin: 0; color: gray; font-size: 0.85rem;">Pedidos</p>
+              <p style="margin: 0; font-size: 1.3rem; font-weight: bold;">{{ totalCount }}</p>
+            </ion-col>
+            <ion-col size="6" style="text-align: center;">
+              <p style="margin: 0; color: gray; font-size: 0.85rem;">Página</p>
+              <p style="margin: 0; font-size: 1.3rem; font-weight: bold;">{{ form.get('page')?.value }} / {{ cantpages }}</p>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  }
+
+  <!-- Lista de Pedidos -->
+  @if (loading()) {
+    <div style="display: flex; justify-content: center; padding: 20px;">
+      <ion-spinner></ion-spinner>
+    </div>
+  } @else if (list.length === 0) {
+    <ion-card>
+      <ion-card-content>
+        <p style="text-align: center; color: gray;">No se encontraron pedidos</p>
+      </ion-card-content>
+    </ion-card>
+  } @else {
+    @for (order of list; track order.id) {
+      <ion-card (click)="viewDetail(order.id!)" style="cursor: pointer;">
+        <ion-card-header>
+          <ion-card-title>
+            Pedido #{{ order.id }} - {{ getStateLabel(order.state) }}
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list>
+            <ion-item>
+              <ion-label>
+                <strong>Cliente:</strong> {{ order.customer ? order.customer.name : 'N/A' }}
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>
+                <strong>Fecha:</strong> {{ formatDate(order.open) }}
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>
+                <strong>Total:</strong> {{ formatCurrency(order.totalAmount) }}
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>
+                <strong>Sucursal:</strong> {{ order.branch ? order.branch.businessName : 'N/A' }}
+              </ion-label>
+            </ion-item>
+            @if (order.user) {
+              <ion-item>
+                <ion-label>
+                  <strong>Vendedor:</strong> {{ order.user.name }}
+                </ion-label>
+              </ion-item>
+            }
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    }
+  }
+
+  <!-- Paginación -->
+  @if (cantpages > 1 && !loading()) {
+    <ion-card>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <ion-button expand="block" [disabled]="form.get('page')?.value === 1" (click)="form.get('page')?.setValue(form.get('page')?.value - 1); find()">
+                Anterior
+              </ion-button>
+            </ion-col>
+            <ion-col size="6">
+              <ion-button expand="block" [disabled]="form.get('page')?.value >= cantpages" (click)="form.get('page')?.setValue(form.get('page')?.value + 1); find()">
+                Siguiente
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  }
+</ion-content>

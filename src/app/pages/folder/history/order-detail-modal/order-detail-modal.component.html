@@ -1,0 +1,107 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="close()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Detalle Pedido #{{ order?.id }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Información General</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>
+            <strong>Cliente:</strong> {{ order?.customer?.name || 'N/A' }}
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <strong>Fecha:</strong> {{ order?.open ? formatDate(order.open) : 'N/A' }}
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <strong>Estado:</strong> {{ order?.state }}
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <strong>Sucursal:</strong> {{ order?.branch?.businessName || 'N/A' }}
+          </ion-label>
+        </ion-item>
+        @if (order?.user) {
+          <ion-item>
+            <ion-label>
+              <strong>Vendedor:</strong> {{ order?.user?.name }}
+            </ion-label>
+          </ion-item>
+        }
+        @if (order?.observation) {
+          <ion-item>
+            <ion-label>
+              <strong>Observaciones:</strong> {{ order?.observation }}
+            </ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Items del Pedido</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      @if (order?.items && order.items.length > 0) {
+        @for (item of order.items; track item.id) {
+          <ion-card style="margin: 10px 0;">
+            <ion-card-content>
+              <div style="margin-bottom: 8px;">
+                <strong>{{ item.item?.name || 'Producto sin nombre' }}</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>SKU:</span>
+                <span>{{ item.item?.sku || 'N/A' }}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>Cantidad:</span>
+                <span>{{ item.quantity }}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>Precio Unitario:</span>
+                <span>{{ formatCurrency(item.unitPrice) }}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; border-top: 1px solid #e0e0e0; padding-top: 4px; margin-top: 4px;">
+                <strong>Subtotal:</strong>
+                <strong>{{ formatCurrency(getItemTotal(item)) }}</strong>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        }
+      } @else {
+        <p style="text-align: center; color: gray;">No hay items en este pedido</p>
+      }
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <div style="display: flex; justify-content: space-between; font-size: 1.2rem;">
+        <strong>Total del Pedido:</strong>
+        <strong style="color: #2dd36f;">{{ formatCurrency(getOrderTotal()) }}</strong>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
