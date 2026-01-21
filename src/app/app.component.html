@@ -4,28 +4,42 @@
       <ion-toolbar>
         <ion-title>Menu</ion-title>
       </ion-toolbar>
+      @if (userName) {
+        <ion-toolbar>
+          <ion-title>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+              <ion-icon name="person-circle-outline"></ion-icon>
+              <span>{{ userName }}</span>
+            </div>
+          </ion-title>
+        </ion-toolbar>
+      }
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
-          <ion-item [routerLink]="p.url" routerLinkActive="selected">
-            <ion-icon slot="start" [name]="p.icon"></ion-icon>
-            <ion-label>
-              {{ p.title }}
-            </ion-label>
-          </ion-item>
-        </ion-menu-toggle>
+        @for (p of appPages; track p.url) {
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerLink]="p.url" routerLinkActive="selected">
+              <ion-icon slot="start" [name]="p.icon"></ion-icon>
+              <ion-label>
+                {{ p.title }}
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        }
       </ion-list>
 
       <ion-list>
-        <ion-menu-toggle auto-hide="false" *ngIf="canInstall()">
-          <ion-item (click)="installApp()" style="cursor: pointer;">
-            <ion-icon slot="start" name="cloud-download-outline"></ion-icon>
-            <ion-label>
-              Instalar App
-            </ion-label>
-          </ion-item>
-        </ion-menu-toggle>
+        @if (canInstall()) {
+          <ion-menu-toggle auto-hide="false">
+            <ion-item (click)="installApp()" style="cursor: pointer;">
+              <ion-icon slot="start" name="cloud-download-outline"></ion-icon>
+              <ion-label>
+                Instalar App
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        }
 
         <ion-menu-toggle auto-hide="false">
           <ion-item (click)="logout()" style="cursor: pointer;">
