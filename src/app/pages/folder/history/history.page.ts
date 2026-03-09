@@ -8,6 +8,7 @@ import { PERIODS, setPeriodChange } from 'src/app/utils/periods.utils';
 import moment from 'moment';
 import { OrderDetailModalComponent } from './order-detail-modal/order-detail-modal.component';
 import { AuthService } from 'src/app/services/auth.service';
+import { MoneyService } from 'src/app/services/money.service';
 
 @Component({
   selector: 'app-history',
@@ -30,7 +31,8 @@ export class HistoryPage implements OnInit {
   constructor(
     private basketService: BasketService,
     private modalCtrl: ModalController,
-    private authService: AuthService
+    private authService: AuthService,
+    private moneyService: MoneyService
   ) {
     this.form = new FormGroup({
       page: new FormControl(1),
@@ -97,7 +99,7 @@ export class HistoryPage implements OnInit {
   }
 
   formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(amount);
+    return this.moneyService.priceReport(this.moneyService.toShowMoney(amount));
   }
 
   async viewDetail(orderId: number) {
