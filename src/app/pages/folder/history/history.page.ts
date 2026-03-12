@@ -65,8 +65,8 @@ export class HistoryPage implements OnInit {
 
     const params = {
       page: this.form.get('page')?.value,
-      dateFrom: moment(this.form.get('dateFrom')?.value).format('MM/DD/YYYY'),
-      dateTo: moment(this.form.get('dateTo')?.value).format('MM/DD/YYYY'),
+      dateFrom: moment(this.form.get('dateFrom')?.value).format('MM/DD/YYYY') + ' 00:00:00',
+      dateTo: moment(this.form.get('dateTo')?.value).format('MM/DD/YYYY') + ' 23:59:59',
       basketId: this.form.get('basketId')?.value || null,
       customerName: this.form.get('customerName')?.value || null,
       state: this.form.get('state')?.value === 'TODOS' ? null : this.form.get('state')?.value,
