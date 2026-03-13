@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { BasketService } from './../../../services/basket.service';
 
-import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonMenuButton, IonTitle, IonToast, IonToolbar } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addSharp, businessOutline, carOutline, createOutline, receiptOutline, sendOutline, storefrontOutline, trashOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
@@ -36,8 +36,7 @@ import { toLong } from 'src/app/utils/money.util';
     IonItemOptions,
     IonItemOption,
     IonFab,
-    IonFabButton,
-    IonToast
+    IonFabButton
   ]
 })
 export class OrdersPage implements OnInit, OnDestroy {

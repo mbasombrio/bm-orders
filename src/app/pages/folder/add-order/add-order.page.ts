@@ -3,7 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
-import { IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonSearchbar, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToast, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonSearchbar, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { bagOutline, chevronForwardOutline, eyeOutline, searchOutline, trash } from 'ionicons/icons';
 import { Article } from 'src/app/models/article';
@@ -45,8 +45,7 @@ import { CustomerSelectionModalComponent } from './customer-selection-modal.comp
     IonItemOptions,
     IonItemOption,
     IonTextarea,
-    IonFooter,
-    IonToast
+    IonFooter
   ],
   providers: [ModalController]
 })
