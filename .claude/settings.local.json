@@ -5,7 +5,14 @@
       "Read(/C:\\Matias\\Cursos\\ionic\\bm-orders\\src\\app\\pages\\folder\\add-order/**)",
       "Read(/C:\\Matias\\Cursos\\ionic\\bm-orders\\src\\app\\pages\\folder\\add-order/**)",
       "Read(/C:\\Matias\\Cursos\\ionic\\bm-orders\\src\\theme/**)",
-      "Read(/C:\\Matias\\Cursos\\ionic\\bm-orders\\src/**)"
+      "Read(/C:\\Matias\\Cursos\\ionic\\bm-orders\\src/**)",
+      "Bash(npx ng:*)",
+      "Bash(cat /Users/mbasombrio/personal/github/bm-orders/src/app/app.routes.ts 2>/dev/null || find /Users/mbasombrio/personal/github/bm-orders/src -name \"*.routes.ts\" | xargs cat)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr:*)"
     ],
     "deny": [],
     "ask": []
