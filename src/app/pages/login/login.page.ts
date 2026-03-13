@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { IonButton, IonInput, IonItem, IonLabel, IonProgressBar } from '@ionic/angular/standalone';
+import { IonButton, IonInput, IonProgressBar } from '@ionic/angular/standalone';
 import { AuthStateService } from 'src/app/services/auth-state.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { StorageService } from 'src/app/services/storage.service';
@@ -18,8 +18,6 @@ import { environment } from 'src/environments/environment';
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    IonItem,
-    IonLabel,
     IonInput,
     IonButton,
     IonProgressBar

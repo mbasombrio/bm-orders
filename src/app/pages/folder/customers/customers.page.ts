@@ -4,16 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton,
-  IonCard, IonCardContent, IonItem,
-  IonLabel, IonButton, IonSpinner, IonSearchbar, IonGrid, IonRow, IonCol,
-  IonIcon, IonBadge, AlertController, ToastController
+  IonSpinner, IonSearchbar, IonIcon,
+  IonFab, IonFabButton, AlertController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { addOutline, createOutline, trashOutline, callOutline, mailOutline, personOutline } from 'ionicons/icons';
+import { addOutline, callOutline, mailOutline, peopleOutline, trashOutline, locationOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { Customer } from 'src/app/models/customer';
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
 import { ClientsService } from 'src/app/services/clients.service';
+import { BmToastService } from 'src/app/services/bm-toast.service';
 
 @Component({
   selector: 'app-customers',
@@ -21,10 +21,10 @@ import { ClientsService } from 'src/app/services/clients.service';
   styleUrls: ['./customers.page.scss'],
   standalone: true,
   imports: [
+    CommonModule, FormsModule,
     IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton,
-    IonCard, IonCardContent, IonItem,
-    IonLabel, IonButton, IonSpinner, IonSearchbar, IonGrid, IonRow, IonCol,
-    IonIcon, IonBadge, CommonModule, FormsModule
+    IonSpinner, IonSearchbar, IonIcon,
+    IonFab, IonFabButton
   ]
 })
 export class CustomersPage implements OnInit, OnDestroy {
@@ -41,9 +41,9 @@ export class CustomersPage implements OnInit, OnDestroy {
     private clientsService: ClientsService,
     private router: Router,
     private alertController: AlertController,
-    private toastController: ToastController
+    private bmToast: BmToastService
   ) {
-    addIcons({ addOutline, createOutline, trashOutline, callOutline, mailOutline, personOutline });
+    addIcons({ addOutline, callOutline, mailOutline, peopleOutline, trashOutline, locationOutline });
   }
 
   ngOnInit() {
@@ -87,8 +87,8 @@ export class CustomersPage implements OnInit, OnDestroy {
 
   async confirmDelete(customer: Customer) {
     const alert = await this.alertController.create({
-      header: 'Confirmar',
-      message: `¿Está seguro de eliminar al cliente ${customer.name} ${customer.lastName || ''}?`,
+      header: 'Eliminar cliente',
+      message: `¿Estás seguro de eliminar a ${this.getFullName(customer)}?`,
       buttons: [
         { text: 'Cancelar', role: 'cancel' },
         {
@@ -106,9 +106,9 @@ export class CustomersPage implements OnInit, OnDestroy {
     try {
       this.loading.set(true);
       await this.sqliteClientsService.deleteCustomer(customer.id);
-      await this.showToast('Cliente eliminado correctamente', 'success');
+      await this.bmToast.success('Cliente eliminado correctamente');
     } catch (error) {
-      await this.showToast('Error al eliminar cliente', 'danger');
+      await this.bmToast.error('Error al eliminar el cliente');
     } finally {
       this.loading.set(false);
     }
@@ -123,19 +123,13 @@ export class CustomersPage implements OnInit, OnDestroy {
     );
   }
 
-  private async showToast(message: string, color: string) {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2000,
-      color,
-      position: 'bottom'
-    });
-    await toast.present();
+  getInitials(customer: Customer): string {
+    const first = customer.name?.[0] ?? '';
+    const last = customer.lastName?.[0] ?? '';
+    return (first + last).toUpperCase() || '?';
   }
 
   ngOnDestroy() {
-    if (this.customersSubscription) {
-      this.customersSubscription.unsubscribe();
-    }
+    this.customersSubscription?.unsubscribe();
   }
 }

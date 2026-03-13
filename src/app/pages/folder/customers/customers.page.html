@@ -7,88 +7,104 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Clientes</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div style="padding: 16px 16px 0; text-align: right;">
-    <ion-button (click)="addCustomer()" color="primary" size="default">
-      <ion-icon slot="start" name="add-outline"></ion-icon>
-      Nuevo Cliente
-    </ion-button>
-  </div>
+<ion-content [fullscreen]="true" class="customers-content">
 
   <!-- Buscador -->
-  <ion-searchbar
-    placeholder="Buscar por nombre, DNI, email..."
-    [debounce]="300"
-    (ionInput)="onSearchChange($event)"
-  ></ion-searchbar>
+  <p class="section-label">Buscar</p>
+  <div class="search-card">
+    <ion-searchbar
+      placeholder="Nombre, DNI, email..."
+      [debounce]="300"
+      (ionInput)="onSearchChange($event)"
+      class="customer-searchbar">
+    </ion-searchbar>
+  </div>
+
+  <!-- Resumen -->
+  @if (!loading() && customers.length > 0) {
+    <div class="results-row">
+      <span class="results-label">
+        {{ filteredCustomers.length }} de {{ totalCount }} clientes
+      </span>
+    </div>
+  }
 
   <!-- Loading -->
   @if (loading()) {
-    <div style="display: flex; justify-content: center; padding: 20px;">
-      <ion-spinner></ion-spinner>
+    <div class="center-spinner">
+      <ion-spinner color="light"></ion-spinner>
     </div>
-  } @else if (filteredCustomers.length === 0) {
-    <ion-card>
-      <ion-card-content>
-        <p style="text-align: center; color: gray;">
-          @if (searchTerm) {
-            No se encontraron clientes para "{{ searchTerm }}"
-          } @else {
-            No hay clientes cargados. Importá clientes desde la sección Datos.
-          }
-        </p>
-      </ion-card-content>
-    </ion-card>
-  } @else {
-    <!-- Lista de Clientes -->
-    @for (customer of filteredCustomers; track customer.id) {
-      <ion-card class="customer-card" (click)="editCustomer(customer)">
-        <ion-card-content>
-          <div class="customer-header">
-            <div class="customer-avatar">
-              <ion-icon name="person-outline"></ion-icon>
-            </div>
-            <div class="customer-info">
-              <h2 class="customer-name">{{ getFullName(customer) }}</h2>
-              @if (customer.dni) {
-                <p class="customer-dni">DNI: {{ customer.dni }}</p>
-              }
-            </div>
-            @if (customer.customerType) {
-              <ion-badge [color]="customer.customerType === 'MAYORISTA' ? 'warning' : 'primary'">
-                {{ customer.customerType }}
-              </ion-badge>
-            }
-          </div>
+  }
 
-          <div class="customer-details">
-            @if (customer.cellphone) {
-              <div class="detail-item">
-                <ion-icon name="call-outline"></ion-icon>
-                <span>{{ customer.cellphone }}</span>
+  <!-- Lista -->
+  @if (!loading()) {
+    @if (filteredCustomers.length === 0) {
+      <div class="empty-state">
+        <ion-icon name="people-outline"></ion-icon>
+        <span>
+          @if (searchTerm) {
+            Sin resultados para "{{ searchTerm }}"
+          } @else {
+            No hay clientes cargados. Importá desde la sección Datos.
+          }
+        </span>
+      </div>
+    } @else {
+      <div class="customer-list">
+        @for (customer of filteredCustomers; track customer.id) {
+          <div class="customer-card" (click)="editCustomer(customer)">
+
+            <div class="customer-top">
+              <div class="customer-avatar">{{ getInitials(customer) }}</div>
+              <div class="customer-info">
+                <span class="customer-name">{{ getFullName(customer) }}</span>
+                @if (customer.dni) {
+                  <span class="customer-dni">DNI {{ customer.dni }}</span>
+                }
+              </div>
+              @if (customer.customerType) {
+                <span class="type-badge type-badge--{{ customer.customerType.toLowerCase() }}">
+                  {{ customer.customerType }}
+                </span>
+              }
+              <button class="delete-btn" (click)="$event.stopPropagation(); confirmDelete(customer)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            </div>
+
+            @if (customer.cellphone || customer.email || customer.address) {
+              <div class="customer-details">
+                @if (customer.cellphone) {
+                  <span class="detail-chip">
+                    <ion-icon name="call-outline"></ion-icon>
+                    {{ customer.cellphone }}
+                  </span>
+                }
+                @if (customer.email) {
+                  <span class="detail-chip">
+                    <ion-icon name="mail-outline"></ion-icon>
+                    {{ customer.email }}
+                  </span>
+                }
+                @if (customer.address) {
+                  <span class="detail-chip detail-chip--address">
+                    <ion-icon name="location-outline"></ion-icon>
+                    {{ customer.address }}{{ customer.city ? ', ' + customer.city : '' }}
+                  </span>
+                }
               </div>
             }
-            @if (customer.email) {
-              <div class="detail-item">
-                <ion-icon name="mail-outline"></ion-icon>
-                <span>{{ customer.email }}</span>
-              </div>
-            }
-            @if (customer.address) {
-              <div class="detail-item">
-                <span class="address-text">{{ customer.address }}{{ customer.city ? ', ' + customer.city : '' }}</span>
-              </div>
-            }
+
           </div>
-        </ion-card-content>
-      </ion-card>
+        }
+      </div>
     }
   }
 
 </ion-content>
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button (click)="addCustomer()" class="add-fab">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

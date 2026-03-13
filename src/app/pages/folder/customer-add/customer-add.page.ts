@@ -6,8 +6,8 @@ import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonButtons,
   IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel,
   IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonGrid,
-  IonRow, IonCol, IonIcon, IonBackButton, IonTextarea, IonNote, IonCheckbox,
-  AlertController, ToastController
+  IonRow, IonCol, IonIcon, IonBackButton, IonTextarea, IonNote,
+  AlertController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { checkmarkOutline, arrowBackOutline } from 'ionicons/icons';
@@ -16,6 +16,7 @@ import { Branch } from 'src/app/models/branch';
 import { ClientsService } from 'src/app/services/clients.service';
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { BmToastService } from 'src/app/services/bm-toast.service';
 
 @Component({
   selector: 'app-customer-add',
@@ -26,7 +27,7 @@ import { AuthService } from 'src/app/services/auth.service';
     IonContent, IonHeader, IonTitle, IonToolbar, IonButtons,
     IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel,
     IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonGrid,
-    IonRow, IonCol, IonIcon, IonBackButton, IonTextarea, IonNote, IonCheckbox,
+    IonRow, IonCol, IonIcon, IonBackButton, IonTextarea, IonNote,
     CommonModule, FormsModule, ReactiveFormsModule
   ]
 })
@@ -47,7 +48,7 @@ export class CustomerAddPage implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private alertController: AlertController,
-    private toastController: ToastController
+    private bmToast: BmToastService
   ) {
     addIcons({ checkmarkOutline, arrowBackOutline });
     this.ivaOptions = Object.keys(this.clientsService.ivaSituation);
@@ -235,23 +236,13 @@ export class CustomerAddPage implements OnInit {
     return null;
   }
 
-  private async showToast(message: string, color: string) {
-    const toast = await this.toastController.create({
-      message,
-      duration: 3000,
-      color,
-      position: 'bottom'
-    });
-    await toast.present();
+  private async showToast(message: string, type: 'success' | 'warning' | 'danger') {
+    if (type === 'danger') await this.bmToast.error(message);
+    else if (type === 'warning') await this.bmToast.warning(message);
+    else await this.bmToast.success(message);
   }
 
   private async showAlert(message: string) {
-    const alert = await this.alertController.create({
-      header: 'Éxito',
-      message,
-      buttons: ['OK']
-    });
-    await alert.present();
-    await alert.onDidDismiss();
+    await this.bmToast.success(message);
   }
 }
