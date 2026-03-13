@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { BasketService } from './../../../services/basket.service';
 
-import { IonButton, IonButtons, IonCard, IonCardContent, IonChip, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addSharp, businessOutline, carOutline, createOutline, receiptOutline, sendOutline, storefrontOutline, trashOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
@@ -31,13 +31,8 @@ import { toLong } from 'src/app/utils/money.util';
     IonButton,
     IonIcon,
     IonContent,
-    IonCard,
-    IonCardContent,
-    IonList,
     IonItemSliding,
     IonItem,
-    IonLabel,
-    IonChip,
     IonItemOptions,
     IonItemOption,
     IonFab,

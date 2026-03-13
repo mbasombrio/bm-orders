@@ -3,9 +3,9 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
-import { IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonSearchbar, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonSearchbar, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { eyeOutline, searchOutline, trash } from 'ionicons/icons';
+import { bagOutline, chevronForwardOutline, eyeOutline, searchOutline, trash } from 'ionicons/icons';
 import { Article } from 'src/app/models/article';
 import { BasketOrder } from 'src/app/models/basket-order';
 import { Branch } from 'src/app/models/branch';
@@ -35,23 +35,17 @@ import { CustomerSelectionModalComponent } from './customer-selection-modal.comp
     IonBackButton,
     IonTitle,
     IonContent,
-    IonCard,
-    IonCardContent,
     IonItem,
     IonSelect,
     IonSelectOption,
     IonSearchbar,
     IonButton,
-    IonCardHeader,
-    IonCardTitle,
-    IonList,
-    IonLabel,
-    IonInput,
     IonIcon,
     IonItemSliding,
     IonItemOptions,
     IonItemOption,
-    IonTextarea
+    IonTextarea,
+    IonFooter
   ],
   providers: [ModalController]
 })
@@ -81,11 +75,7 @@ export class AddOrderPage implements OnInit {
     private orderEditDataService: OrderEditDataService,
     private itemsService: ItemsService
   ) {
-    addIcons({
-       trash,
-       searchOutline,
-       eyeOutline
-    });
+    addIcons({ trash, searchOutline, eyeOutline, bagOutline, chevronForwardOutline });
   }
 
   async ngOnInit() {
@@ -305,6 +295,18 @@ export class AddOrderPage implements OnInit {
       this.orderItems[index].quantity = 1;
     }
     this.calculateTotal();
+  }
+
+  incrementQty(index: number) {
+    this.orderItems[index].quantity++;
+    this.calculateTotal();
+  }
+
+  decrementQty(index: number) {
+    if (this.orderItems[index].quantity > 1) {
+      this.orderItems[index].quantity--;
+      this.calculateTotal();
+    }
   }
 
   async saveOrder() {

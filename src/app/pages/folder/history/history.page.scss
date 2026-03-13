@@ -1,0 +1,252 @@
+// ─── Tokens ───────────────────────────────────────────────────────
+:host {
+  --brand:       #3c8dbc;
+  --brand-dark:  #2d6d94;
+  --brand-light: rgba(60, 141, 188, 0.14);
+  --surface:     rgba(255, 255, 255, 0.95);
+  --border-dark: rgba(0, 0, 0, 0.07);
+  --ink-1:       #0f1923;
+  --ink-2:       #4a5568;
+  --ink-3:       #8a96a3;
+}
+
+// ─── Section Label ────────────────────────────────────────────────
+.section-label {
+  margin: 0;
+  padding: 16px 16px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+// ─── Filters Card ─────────────────────────────────────────────────
+.filters-card {
+  margin: 0 16px;
+  background: #3c8dbc;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgba(255, 255, 255, 0.8);
+  padding-left: 2px;
+}
+
+.filter-select {
+  --background:              #ffffff;
+  --border-radius:           10px;
+  --highlight-color-focused: var(--brand);
+  --highlight-color-valid:   var(--brand);
+  --color:                   var(--ink-1);
+  --placeholder-color:       var(--ink-3);
+  width: 100%;
+}
+
+.search-btn {
+  --background:           var(--brand-dark);
+  --background-activated: #1a4f6e;
+  --border-radius:        10px;
+  --color:                #ffffff;
+  --box-shadow:           none;
+  margin: 0;
+  height: 44px;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+// ─── Summary ─────────────────────────────────────────────────────
+.summary-row {
+  display: flex;
+  gap: 10px;
+  margin: 16px 16px 0;
+}
+
+.summary-tile {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 12px 10px;
+  text-align: center;
+
+  &.summary-tile--total {
+    flex: 2;
+    background: rgba(255, 255, 255, 0.16);
+  }
+}
+
+.summary-value {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin-bottom: 3px;
+
+  &.summary-value--total {
+    font-size: 1.25rem;
+  }
+}
+
+.summary-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+// ─── Order List ──────────────────────────────────────────────────
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 16px 16px;
+}
+
+.order-card {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: opacity 0.2s;
+
+  &:active {
+    transform: scale(0.985);
+  }
+
+  &.order-card--loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.card-spinner {
+  width: 18px;
+  height: 18px;
+  color: var(--brand);
+}
+
+.order-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.order-id {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.order-customer {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink-1);
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-dark);
+}
+
+.order-date {
+  font-size: 0.78rem;
+  color: var(--ink-3);
+}
+
+.order-total {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--brand-dark);
+}
+
+// ─── Badges ───────────────────────────────────────────────────────
+.order-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #f0f4f8;
+  color: var(--ink-2);
+
+  &.order-badge--abierto    { background: #dbeeff; color: #2a6a96; }
+  &.order-badge--pendiente  { background: #fff3cd; color: #8a6400; }
+  &.order-badge--cerrado,
+  &.order-badge--entregado,
+  &.order-badge--aprobado   { background: #d4f4e2; color: #1a7a45; }
+  &.order-badge--facturado  { background: #dbeeff; color: #2a6a96; }
+  &.order-badge--cancelado  { background: #fde8eb; color: #b32235; }
+}
+
+// ─── States ──────────────────────────────────────────────────────
+.center-spinner {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 16px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.85rem;
+  text-align: center;
+
+  ion-icon {
+    font-size: 2.5rem;
+    opacity: 0.4;
+  }
+}
+
+// ─── Pagination ──────────────────────────────────────────────────
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 12px 24px;
+}
+
+.page-btn {
+  --color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  font-weight: 600;
+}

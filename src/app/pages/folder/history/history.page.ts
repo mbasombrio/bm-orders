@@ -1,7 +1,9 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonGrid, IonRow, IonCol, ModalController } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonIcon, ModalController } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { receiptOutline, chevronBackOutline, chevronForwardOutline } from 'ionicons/icons';
 import { BasketService } from 'src/app/services/basket.service';
 import { BasketOrder, BasketOrderState } from 'src/app/models/basket-order';
 import { PERIODS, setPeriodChange } from 'src/app/utils/periods.utils';
@@ -15,12 +17,13 @@ import { MoneyService } from 'src/app/services/money.service';
   templateUrl: './history.page.html',
   styleUrls: ['./history.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonGrid, IonRow, IonCol, CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonIcon, CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class HistoryPage implements OnInit {
   form: FormGroup;
   list: BasketOrder[] = [];
   loading = signal(false);
+  loadingOrderId = signal<number | null>(null);
   cantpages = 0;
   totalCount = 0;
   pageSize = 20;
@@ -34,6 +37,7 @@ export class HistoryPage implements OnInit {
     private authService: AuthService,
     private moneyService: MoneyService
   ) {
+    addIcons({ receiptOutline, chevronBackOutline, chevronForwardOutline });
     this.form = new FormGroup({
       page: new FormControl(1),
       period: new FormControl('today'),
@@ -103,16 +107,19 @@ export class HistoryPage implements OnInit {
   }
 
   async viewDetail(orderId: number) {
+    if (this.loadingOrderId() !== null) return;
+    this.loadingOrderId.set(orderId);
+
     this.basketService.get(orderId).subscribe(async (order) => {
       if (order) {
         const modal = await this.modalCtrl.create({
           component: OrderDetailModalComponent,
-          componentProps: {
-            order: order
-          }
+          componentProps: { order }
         });
         await modal.present();
+        await modal.onDidDismiss();
       }
+      this.loadingOrderId.set(null);
     });
   }
 }
