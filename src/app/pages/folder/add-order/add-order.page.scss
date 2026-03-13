@@ -1,534 +1,347 @@
+// ─── Tokens ──────────────────────────────────────────────────────
 :host {
-  ion-content {
-    --padding-top: 20px;
-    --padding-bottom: 20px;
-  }
-
-  // Header moderno
-  ion-header {
-    ion-toolbar {
-      --background: rgba(255, 255, 255, 0.95);
-      --color: #2d3748;
-      backdrop-filter: blur(10px);
-      --box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    ion-title {
-      font-weight: 700;
-      font-size: 1.4rem;
-      letter-spacing: -0.5px;
-    }
-
-    ion-menu-button {
-      --color: #4a5568;
-    }
-  }
-
-  // Cards con diseño moderno
-  ion-card {
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    margin: 20px 16px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-    }
-  }
-
-  ion-card-header {
-    padding: 20px 20px 10px 20px;
-    background: var(--app-background-gradient);
-    border-radius: 20px 20px 0 0;
-    margin: -1px -1px 0 -1px;
-  }
-
-  ion-card-title {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: -0.3px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  ion-card-content {
-    padding: 24px;
-
-    // Espaciado específico para elementos
-    .search-container {
-      margin-top: 8px;
-    }
-  }
-
-  // Inputs estilo mobile nativo
-  ion-item {
-    --background: transparent;
-    --padding-start: 0;
-    --inner-padding-end: 0;
-    --border-width: 0;
-    --min-height: 0;
-    margin-bottom: 16px;
-    background: transparent;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  // Labels flotantes estilo mobile
-  .form-field {
-    position: relative;
-    margin-bottom: 24px;
-  }
-
-  // Select estilo iOS/mobile nativo
-  ion-select {
-    --background: #f8f9fa;
-    --color: #1a202c;
-    --placeholder-color: #9ca3af;
-    --highlight-color: #3c8dbc;
-    --color-focused: #1a202c;
-    --padding-start: 16px;
-    --padding-bottom: 8px;
-    min-height: 56px;
-    border-radius: 10px;
-    border: none;
-
-    transition: all 0.2s ease;
-    width: 100%;
-
-    &.select-expanded,
-    &.has-focus {
-      --background: #ffffff;
-      --color: #1a202c;
-      box-shadow: 0 0 0 1px #3c8dbc;
-    }
-
-    &.select-filled {
-      --background: #ffffff;
-      --color: #1a202c;
-
-      .select-text {
-        color: #1a202c !important;
-        font-weight: 500;
-      }
-    }
-
-    // Label flotante estilo iOS
-    &:not(.select-filled)+.floating-label {
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 16px;
-      color: #9ca3af;
-      font-weight: 400;
-    }
-
-    &.select-filled+.floating-label,
-    &.has-focus+.floating-label {
-      top: 8px;
-      transform: translateY(0);
-      font-size: 12px;
-      color: #3c8dbc;
-      font-weight: 600;
-    }
-  }
-
-  // Label flotante personalizado
-  .floating-label {
-    position: absolute;
-    left: 16px;
-    top: 8px;
-    font-size: 12px;
-    color: #3c8dbc;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    pointer-events: none;
-    background: transparent;
-    z-index: 1;
-    line-height: 1;
-  }
-
-  // Selects y searchbar modernos
-
-  ion-searchbar {
-    --background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    transition: all 0.3s ease;
-
-    &:focus-within {
-      box-shadow: 0 6px 20px rgba(60, 141, 188, 0.2);
-      border-color: #3c8dbc;
-      transform: translateY(-1px);
-    }
-  }
-
-  // Estilos específicos para ion-select
-  ion-select {
-    --color: #2d3748;
-    --placeholder-color: #a0aec0;
-
-    &.select-expanded,
-    &.has-focus,
-    &.select-filled {
-      --color: #3c8dbc;
-
-      .select-text {
-        color: #3c8dbc !important;
-      }
-    }
-  }
-
-  ion-searchbar {
-    --placeholder-color: #a0aec0;
-    --color: #2d3748;
-    --icon-color: #3c8dbc;
-    --clear-button-color: #3c8dbc;
-    --border-radius: 16px;
-    margin-bottom: 0;
-
-    .searchbar-input-container {
-      border-radius: 16px;
-    }
-  }
-
-  // Lista de artículos moderna
-  ion-list {
-    background: transparent;
-    padding: 0;
-  }
-
-  ion-item {
-    ion-label {
-      h2 {
-        font-weight: 600;
-        color: #2d3748;
-        font-size: 1.1rem;
-        margin-bottom: 4px;
-      }
-
-      p {
-        color: #718096;
-        font-size: 0.9rem;
-        font-weight: 500;
-      }
-    }
-  }
-
-  // Controles de cantidad compactos
-  .quantity-controls {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    justify-content: flex-end;
-
-    ion-input {
-      --background: #f8f9fa;
-      --color: #1a202c;
-      --border-color: #e2e8f0;
-
-      --border-width: 1px;
-      --border-style: solid;
-      --padding-start: 6px;
-      --padding-end: 6px;
-      --padding-top: 4px;
-      --padding-bottom: 4px;
-      width: 80px;
-      height: 28px;
-      font-size: 14px;
-      font-weight: 500;
-      text-align: center;
-
-      &.has-focus {
-        --border-color: #3c8dbc;
-        --background: #ffffff;
-        box-shadow: 0 0 0 1px #3c8dbc;
-      }
-    }
-
-    .subtotal {
-      font-weight: 600;
-      color: #3c8dbc;
-      font-size: 1rem;
-      min-width: 80px;
-      text-align: right;
-    }
-  }
-
-  // Botón de búsqueda moderno
-  .search-container {
-    display: flex;
-    gap: 12px;
-    align-items: stretch;
-    margin-bottom: 16px;
-
-    ion-searchbar {
-      flex: 1;
-      margin-bottom: 0;
-    }
-
-    ion-button {
-      --border-radius: 16px;
-      --color: #ffffff;
-      height: 48px;
-      min-width: 100px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        transition: left 0.5s ease;
-      }
-
-      &:hover {
-        transform: translateY(-2px);
-      }
-
-      &:active::before {
-        left: 100%;
-      }
-
-      ion-icon {
-        margin-right: 8px;
-        font-size: 1.1rem;
-      }
-    }
-  }
-
-  // Botones generales modernos
-  ion-button:not([expand="full"]):not([color="danger"]) {
-    --border-radius: 16px;
-    --color: #ffffff;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      transition: left 0.5s ease;
-    }
-
-    &:hover {
-      transform: translateY(-2px);
-      --box-shadow: 0 6px 18px rgba(102, 126, 234, 0.35);
-    }
-
-    &:active::before {
-      left: 100%;
-    }
-  }
-
-  // Botón de eliminar moderno
-  ion-button[color="danger"] {
-    --border-radius: 14px;
-    --color: #ffffff;
-    height: 42px;
-    width: 42px;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      transition: left 0.5s ease;
-    }
-
-    &:hover {
-      transform: translateY(-2px) scale(1.05);
-    }
-
-    &:active::before {
-      left: 100%;
-    }
-
-    ion-icon {
-      font-size: 1.2rem;
-      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-    }
-  }
-
-  // Botón principal moderno
-  ion-button[expand="full"] {
-    margin: 24px 16px 16px 16px;
-    height: 56px;
-    font-weight: 700;
-    font-size: 1.1rem;
-    --border-radius: 16px;
-    --box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    position: relative;
-    overflow: hidden;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-
-    &:not([disabled]):hover {
-      transform: translateY(-2px);
-      --box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
-    }
-
-    &[disabled] {
-      opacity: 0.6;
-      --box-shadow: none;
-    }
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s ease;
-    }
-
-    &:not([disabled]):active::before {
-      left: 100%;
-    }
-  }
-
-  // Mensaje cuando no hay artículos
-  ion-item:has(ion-label:only-child) {
-    text-align: center;
-    font-style: italic;
-    color: #a0aec0;
-    background: rgba(247, 250, 252, 0.5);
-    border: 2px dashed #e2e8f0;
-  }
-
-  // Animaciones y transiciones
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  ion-card {
-    animation: slideUp 0.4s ease-out;
-  }
-
-  ion-card:nth-child(2) {
-    animation-delay: 0.1s;
-  }
-
-  ion-card:nth-child(3) {
-    animation-delay: 0.2s;
-  }
-
-  // Responsive design
-  @media (max-width: 768px) {
-    ion-card {
-      margin: 12px 8px;
-    }
-
-    ion-card-content {
-      padding: 16px;
-    }
-
-    ion-button[expand="full"] {
-      margin: 16px 8px;
-      height: 52px;
-    }
-
-    .search-container {
-      flex-direction: column;
-      gap: 8px;
-
-      ion-button {
-        height: 44px;
-        min-width: unset;
-      }
-    }
-  }
-
-  
-
-  ion-item-sliding ion-item-options {
-    height: 75px;
-    margin: auto 0;
-  }
-
-  ion-item-sliding ion-item-option {
-    /* --width: 50px; */
-    height: 100%;
-  }
-
-  ion-item ion-textarea {
-    ion-label {
-      color: #2d3748;
-    }
-  }
-
-  ion-item.item-has-focus ion-textarea ion-label,
-  ion-item.item-has-value ion-textarea ion-label {
-    color: #2d3748;
-  }
-
-  ion-textarea.ion-valid {
-    --highlight-color: var(--ion-color-primary);
-  }
-
-  .custom-select-wrapper {
-    width: 100%;
-    cursor: pointer;
-
-    ion-label {
-      margin-bottom: 8px;
-    }
-
-    .custom-select-value {
-      background: #f8f9fa;
-      padding: 16px;
-      border-radius: 10px;
-      min-height: 56px;
-      display: flex;
-      align-items: center;
-      transition: all 0.2s ease;
-
-
-      span {
-        color: #1a202c;
-        font-weight: 500;
-
-        &.placeholder {
-          color: #9ca3af;
-          font-weight: 400;
-        }
-      }
-    }
+  --brand:       #3c8dbc;
+  --brand-dark:  #2d6d94;
+  --brand-light: rgba(60, 141, 188, 0.12);
+  --surface:     rgba(255, 255, 255, 0.97);
+  --border:      rgba(0, 0, 0, 0.10);
+  --ink-1:       #0f1923;
+  --ink-2:       #4a5568;
+  --ink-3:       #8a96a3;
+}
+
+// ─── Section Label ────────────────────────────────────────────────
+.section-label {
+  margin: 0;
+  padding: 16px 16px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+// ─── Form Card ───────────────────────────────────────────────────
+.form-card {
+  margin: 0 16px;
+  background: #3c8dbc;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// ─── Customer Field ───────────────────────────────────────────────
+.customer-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  &:active {
+    background: rgba(255, 255, 255, 0.88);
   }
 }
 
+.cf-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cf-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--brand-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.cf-value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.cf-placeholder {
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+}
+
+.cf-chevron {
+  color: var(--ink-3);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.eye-btn {
+  --color: var(--brand);
+  --padding-start: 4px;
+  --padding-end: 4px;
+  height: 32px;
+}
+
+// ─── Selects Grid ─────────────────────────────────────────────────
+.selects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+// ─── Outlined Fields ──────────────────────────────────────────────
+.field-select {
+  --background:              #ffffff;
+  --border-radius:           10px;
+  --highlight-color-focused: var(--brand);
+  --highlight-color-valid:   var(--brand);
+  --color:                   var(--ink-1);
+  --placeholder-color:       var(--ink-3);
+  width: 100%;
+}
+
+.field-textarea {
+  --background:              #ffffff;
+  --border-radius:           10px;
+  --highlight-color-focused: var(--brand);
+  --highlight-color-valid:   var(--brand);
+  --color:                   var(--ink-1);
+  --placeholder-color:       var(--ink-3);
+}
+
+// ─── Search Card ──────────────────────────────────────────────────
+.search-card {
+  margin: 0 16px;
+  background: var(--surface);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  padding: 8px 14px 14px;
+}
+
+.article-searchbar {
+  --background:        rgba(0, 0, 0, 0.04);
+  --border-radius:     10px;
+  --box-shadow:        none;
+  --placeholder-color: var(--ink-3);
+  --color:             var(--ink-1);
+  --icon-color:        var(--brand);
+  --clear-button-color: var(--brand);
+  padding: 0 0 6px 0;
+}
+
+.search-action-btn {
+  --background:           var(--brand);
+  --background-activated: var(--brand-dark);
+  --border-radius:        10px;
+  --color:                #ffffff;
+  margin: 0;
+  height: 44px;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+// ─── Items Card ───────────────────────────────────────────────────
+.items-card {
+  margin: 0 16px;
+  background: var(--surface);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 8px 4px;
+  gap: 4px;
+}
+
+ion-item-sliding {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.item-row {
+  --background:        #ffffff;
+  --padding-start:     0;
+  --padding-end:       0;
+  --inner-padding-end: 0;
+  --min-height:        0;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+
+  &::part(native) {
+    padding: 0;
+  }
+}
+
+.item-card {
+  width: 100%;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+// ─── Qty Stepper ──────────────────────────────────────────────────
+.qty-stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-light);
+  border: none;
+  color: var(--brand-dark);
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+
+  &:active {
+    background: rgba(60, 141, 188, 0.25);
+  }
+}
+
+.qty-value {
+  width: 32px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink-1);
+  background: #ffffff;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  line-height: 30px;
+}
+
+.item-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-meta {
+  font-size: 0.72rem;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.item-subtotal {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--brand-dark);
+  flex-shrink: 0;
+  text-align: right;
+  min-width: 60px;
+}
+
+// ─── Total Bar ────────────────────────────────────────────────────
+.total-bar {
+  background: var(--brand);
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-label {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+}
+
+.total-amount {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+}
+
+// ─── Empty State ─────────────────────────────────────────────────
+.items-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 28px 20px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.88rem;
+  text-align: center;
+
+  ion-icon {
+    font-size: 2.2rem;
+    opacity: 0.4;
+    margin-bottom: 4px;
+  }
+}
+
+.items-empty-hint {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+// ─── Footer ──────────────────────────────────────────────────────
+ion-footer {
+  --background: transparent;
+  background: transparent;
+  border-top: none;
+
+  &::before {
+    display: none;
+  }
+}
+
+.footer-wrap {
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(10, 26, 39, 0.98) 0%, rgba(10, 26, 39, 0) 100%);
+}
+
+.save-btn {
+  --background:           var(--brand);
+  --background-activated: var(--brand-dark);
+  --border-radius:        12px;
+  --color:                #ffffff;
+  margin: 0;
+  height: 52px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+// ─── Quantity Alert ───────────────────────────────────────────────
 ::ng-deep .quantity-alert {
   .alert-sub-title {
     font-size: 15px;
@@ -543,8 +356,6 @@
     #stock-message {
       font-weight: 600;
       font-size: 14px;
-      transition: color 0.3s ease;
-      display: inline-block;
     }
   }
 }

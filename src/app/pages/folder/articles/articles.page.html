@@ -7,46 +7,71 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Acciones - Importación</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-button expand="block" fill="solid" (click)="importArticles()" [disabled]="isLoading()">
-        @if (isLoading()) {
-        <ion-spinner name="crescent" slot="start"></ion-spinner>
-        } @else {
-        <ion-icon name="add-sharp"></ion-icon>
-        }
-        {{ isLoading() ? loadingMessage() : ' Importar Artículos' }}
-      </ion-button>
+<ion-content [fullscreen]="true" class="data-content">
 
-      <ion-button expand="block" fill="solid" color="secondary" (click)="importClients()" [disabled]="isLoading()">
-        @if (isLoading()) {
-        <ion-spinner name="crescent" slot="start"></ion-spinner>
-        } @else {
-        <ion-icon name="people-sharp"></ion-icon>
-        }
-        {{ isLoading() ? loadingMessage() : ' Importar Clientes' }}
-      </ion-button>
+  <p class="section-label">Sincronización</p>
 
-      <ion-button expand="block" fill="solid" color="tertiary" (click)="importBranches()" [disabled]="isLoading()">
-        @if (isLoading()) {
-        <ion-spinner name="crescent" slot="start"></ion-spinner>
-        } @else {
-        <ion-icon name="business-sharp"></ion-icon>
-        }
-        {{ isLoading() ? loadingMessage() : ' Importar Sucursales' }}
-      </ion-button>
+  <div class="actions-card">
 
-      @if (isLoading()) {
-      <ion-progress-bar type="indeterminate" color="primary"></ion-progress-bar>
+    <button class="action-row" (click)="importArticles()" [disabled]="isLoading()">
+      <div class="action-icon-wrap action-icon-wrap--articles">
+        @if (activeImport() === 'articles') {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          <ion-icon name="cube-outline"></ion-icon>
+        }
+      </div>
+      <div class="action-body">
+        <span class="action-title">Importar Artículos</span>
+        <span class="action-sub">Actualiza el catálogo local desde el servidor</span>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="action-chevron"></ion-icon>
+    </button>
+
+    <div class="action-divider"></div>
+
+    <button class="action-row" (click)="importClients()" [disabled]="isLoading()">
+      <div class="action-icon-wrap action-icon-wrap--clients">
+        @if (activeImport() === 'clients') {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          <ion-icon name="people-outline"></ion-icon>
+        }
+      </div>
+      <div class="action-body">
+        <span class="action-title">Importar Clientes</span>
+        <span class="action-sub">Sincroniza la lista de clientes</span>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="action-chevron"></ion-icon>
+    </button>
+
+    <div class="action-divider"></div>
+
+    <button class="action-row" (click)="importBranches()" [disabled]="isLoading()">
+      <div class="action-icon-wrap action-icon-wrap--branches">
+        @if (activeImport() === 'branches') {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          <ion-icon name="business-outline"></ion-icon>
+        }
+      </div>
+      <div class="action-body">
+        <span class="action-title">Importar Sucursales</span>
+        <span class="action-sub">Actualiza las sucursales del usuario</span>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="action-chevron"></ion-icon>
+    </button>
+
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
       <p class="loading-text">
-        <ion-icon name="information-circle-sharp"></ion-icon>
-        Esta operación puede tomar varios minutos dependiendo de la cantidad de artículos
+        <ion-icon name="information-circle-outline"></ion-icon>
+        {{ loadingMessage() }}
       </p>
-      }
-    </ion-card-content>
-  </ion-card>
+    </div>
+  }
+
 </ion-content>
