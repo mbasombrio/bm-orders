@@ -1,25 +1,29 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonGrid, IonRow, IonCol, ModalController } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonIcon, ModalController } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { receiptOutline, chevronBackOutline, chevronForwardOutline } from 'ionicons/icons';
 import { BasketService } from 'src/app/services/basket.service';
 import { BasketOrder, BasketOrderState } from 'src/app/models/basket-order';
 import { PERIODS, setPeriodChange } from 'src/app/utils/periods.utils';
 import moment from 'moment';
 import { OrderDetailModalComponent } from './order-detail-modal/order-detail-modal.component';
 import { AuthService } from 'src/app/services/auth.service';
+import { MoneyService } from 'src/app/services/money.service';
 
 @Component({
   selector: 'app-history',
   templateUrl: './history.page.html',
   styleUrls: ['./history.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonGrid, IonRow, IonCol, CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonIcon, CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class HistoryPage implements OnInit {
   form: FormGroup;
   list: BasketOrder[] = [];
   loading = signal(false);
+  loadingOrderId = signal<number | null>(null);
   cantpages = 0;
   totalCount = 0;
   pageSize = 20;
@@ -30,8 +34,10 @@ export class HistoryPage implements OnInit {
   constructor(
     private basketService: BasketService,
     private modalCtrl: ModalController,
-    private authService: AuthService
+    private authService: AuthService,
+    private moneyService: MoneyService
   ) {
+    addIcons({ receiptOutline, chevronBackOutline, chevronForwardOutline });
     this.form = new FormGroup({
       page: new FormControl(1),
       period: new FormControl('today'),
@@ -63,8 +69,8 @@ export class HistoryPage implements OnInit {
 
     const params = {
       page: this.form.get('page')?.value,
-      dateFrom: moment(this.form.get('dateFrom')?.value).format('MM/DD/YYYY'),
-      dateTo: moment(this.form.get('dateTo')?.value).format('MM/DD/YYYY'),
+      dateFrom: moment(this.form.get('dateFrom')?.value).format('MM/DD/YYYY') + ' 00:00:00',
+      dateTo: moment(this.form.get('dateTo')?.value).format('MM/DD/YYYY') + ' 23:59:59',
       basketId: this.form.get('basketId')?.value || null,
       customerName: this.form.get('customerName')?.value || null,
       state: this.form.get('state')?.value === 'TODOS' ? null : this.form.get('state')?.value,
@@ -97,20 +103,23 @@ export class HistoryPage implements OnInit {
   }
 
   formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(amount);
+    return this.moneyService.priceReport(this.moneyService.toShowMoney(amount));
   }
 
   async viewDetail(orderId: number) {
+    if (this.loadingOrderId() !== null) return;
+    this.loadingOrderId.set(orderId);
+
     this.basketService.get(orderId).subscribe(async (order) => {
       if (order) {
         const modal = await this.modalCtrl.create({
           component: OrderDetailModalComponent,
-          componentProps: {
-            order: order
-          }
+          componentProps: { order }
         });
         await modal.present();
+        await modal.onDidDismiss();
       }
+      this.loadingOrderId.set(null);
     });
   }
 }
