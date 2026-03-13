@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { IonApp, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonRouterOutlet, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { cubeOutline, homeOutline, listOutline, logOutOutline, cloudDownloadOutline, personCircleOutline } from 'ionicons/icons';
+import { cubeOutline, homeOutline, listOutline, logOutOutline, cloudDownloadOutline, personCircleOutline, peopleOutline } from 'ionicons/icons';
 import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
 import { PwaService } from './services/pwa.service';
@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
     { title: 'Inicio', url: '/home', icon: 'home-outline' },
     { title: 'Pedidos', url: '/orders', icon: 'list-outline' },
     { title: 'Historial', url: '/history', icon: 'list-outline' },
+    { title: 'Clientes', url: '/customers', icon: 'people-outline' },
     { title: 'Datos', url: '/data', icon: 'cube-outline' },
   ];
 
@@ -33,7 +34,7 @@ export class AppComponent implements OnInit {
     private pwaService: PwaService,
     private storage: StorageService
   ) {
-    addIcons({ homeOutline, listOutline, cubeOutline, logOutOutline, cloudDownloadOutline, personCircleOutline });
+    addIcons({ homeOutline, listOutline, cubeOutline, logOutOutline, cloudDownloadOutline, personCircleOutline, peopleOutline });
   }
 
   ngOnInit() {
