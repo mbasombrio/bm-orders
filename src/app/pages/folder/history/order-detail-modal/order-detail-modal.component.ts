@@ -37,7 +37,7 @@ export class OrderDetailModalComponent {
   }
 
   getOrderTotal(): number {
-    if (!this.order?.items || this.order.items.length === 0) {
+    if (!this.order.items || this.order.items.length === 0) {
       return 0;
     }
     return this.order.items.reduce((total, item) => total + this.getItemTotal(item), 0);

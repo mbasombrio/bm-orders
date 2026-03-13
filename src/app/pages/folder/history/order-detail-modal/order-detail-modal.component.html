@@ -5,7 +5,7 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Detalle Pedido #{{ order?.id }}</ion-title>
+    <ion-title>Detalle Pedido #{{ order.id }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="close()">
         <ion-icon name="close"></ion-icon>
@@ -23,35 +23,35 @@
       <ion-list>
         <ion-item>
           <ion-label>
-            <strong>Cliente:</strong> {{ order?.customer?.name || 'N/A' }}
+            <strong>Cliente:</strong> {{ order.customer.name || 'N/A' }}
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <strong>Fecha:</strong> {{ order?.open ? formatDate(order.open) : 'N/A' }}
+            <strong>Fecha:</strong> {{ order.open ? formatDate(order.open) : 'N/A' }}
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <strong>Estado:</strong> {{ order?.state }}
+            <strong>Estado:</strong> {{ order.state }}
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <strong>Sucursal:</strong> {{ order?.branch?.businessName || 'N/A' }}
+            <strong>Sucursal:</strong> {{ order.branch.businessName || 'N/A' }}
           </ion-label>
         </ion-item>
-        @if (order?.user) {
+        @if (order.user) {
           <ion-item>
             <ion-label>
-              <strong>Vendedor:</strong> {{ order?.user?.name }}
+              <strong>Vendedor:</strong> {{ order.user.name }}
             </ion-label>
           </ion-item>
         }
-        @if (order?.observation) {
+        @if (order.observation) {
           <ion-item>
             <ion-label>
-              <strong>Observaciones:</strong> {{ order?.observation }}
+              <strong>Observaciones:</strong> {{ order.observation }}
             </ion-label>
           </ion-item>
         }
@@ -64,7 +64,7 @@
       <ion-card-title>Items del Pedido</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      @if (order?.items && order.items.length > 0) {
+      @if (order.items && order.items.length > 0) {
         @for (item of order.items; track item.id) {
           <ion-card style="margin: 10px 0;">
             <ion-card-content>
