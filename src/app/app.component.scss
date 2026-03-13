@@ -117,3 +117,40 @@ ion-note {
 ion-item.selected {
   --color: var(--ion-color-primary);
 }
+
+.update-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 500;
+
+  ion-icon {
+    font-size: 1.4rem;
+  }
+
+  button {
+    background: white;
+    color: #2563eb;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+}

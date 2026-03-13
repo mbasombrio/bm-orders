@@ -1,3 +1,10 @@
+@if (showUpdateBanner()) {
+  <div class="update-banner">
+    <ion-icon name="cloud-download-outline"></ion-icon>
+    <span>Nueva versión disponible</span>
+    <button (click)="activateUpdate()">Actualizar ahora</button>
+  </div>
+}
 <ion-app>
   <ion-menu content-id="main-content" [disabled]="isLoginPage">
     <ion-header>

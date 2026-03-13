@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { IonApp, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonRouterOutlet, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { addIcons } from 'ionicons';
 import { cubeOutline, homeOutline, listOutline, logOutOutline, cloudDownloadOutline, personCircleOutline } from 'ionicons/icons';
 import { filter } from 'rxjs/operators';
@@ -17,6 +18,9 @@ import { StorageService } from './services/storage.service';
   imports: [CommonModule, RouterLink, RouterLinkActive, IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonMenuToggle, IonItem, IonIcon, IonLabel],
 })
 export class AppComponent implements OnInit {
+  showUpdateBanner = signal(false);
+  private swUpdate = inject(SwUpdate, { optional: true });
+
   public appPages = [
     { title: 'Inicio', url: '/home', icon: 'home-outline' },
     { title: 'Pedidos', url: '/orders', icon: 'list-outline' },
@@ -37,6 +41,14 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.swUpdate?.isEnabled) {
+      this.swUpdate.versionUpdates.pipe(
+        filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY')
+      ).subscribe(() => {
+        this.showUpdateBanner.set(true);
+      });
+    }
+
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
@@ -70,6 +82,10 @@ export class AppComponent implements OnInit {
 
   installApp() {
     this.pwaService.install();
+  }
+
+  activateUpdate() {
+    this.swUpdate?.activateUpdate().then(() => document.location.reload());
   }
 
   logout() {
