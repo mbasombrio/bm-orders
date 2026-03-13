@@ -1,0 +1,110 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Clientes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="customers-content">
+
+  <!-- Buscador -->
+  <p class="section-label">Buscar</p>
+  <div class="search-card">
+    <ion-searchbar
+      placeholder="Nombre, DNI, email..."
+      [debounce]="300"
+      (ionInput)="onSearchChange($event)"
+      class="customer-searchbar">
+    </ion-searchbar>
+  </div>
+
+  <!-- Resumen -->
+  @if (!loading() && customers.length > 0) {
+    <div class="results-row">
+      <span class="results-label">
+        {{ filteredCustomers.length }} de {{ totalCount }} clientes
+      </span>
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="center-spinner">
+      <ion-spinner color="light"></ion-spinner>
+    </div>
+  }
+
+  <!-- Lista -->
+  @if (!loading()) {
+    @if (filteredCustomers.length === 0) {
+      <div class="empty-state">
+        <ion-icon name="people-outline"></ion-icon>
+        <span>
+          @if (searchTerm) {
+            Sin resultados para "{{ searchTerm }}"
+          } @else {
+            No hay clientes cargados. Importá desde la sección Datos.
+          }
+        </span>
+      </div>
+    } @else {
+      <div class="customer-list">
+        @for (customer of filteredCustomers; track customer.id) {
+          <div class="customer-card" (click)="editCustomer(customer)">
+
+            <div class="customer-top">
+              <div class="customer-avatar">{{ getInitials(customer) }}</div>
+              <div class="customer-info">
+                <span class="customer-name">{{ getFullName(customer) }}</span>
+                @if (customer.dni) {
+                  <span class="customer-dni">DNI {{ customer.dni }}</span>
+                }
+              </div>
+              @if (customer.customerType) {
+                <span class="type-badge type-badge--{{ customer.customerType.toLowerCase() }}">
+                  {{ customer.customerType }}
+                </span>
+              }
+              <button class="delete-btn" (click)="$event.stopPropagation(); confirmDelete(customer)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            </div>
+
+            @if (customer.cellphone || customer.email || customer.address) {
+              <div class="customer-details">
+                @if (customer.cellphone) {
+                  <span class="detail-chip">
+                    <ion-icon name="call-outline"></ion-icon>
+                    {{ customer.cellphone }}
+                  </span>
+                }
+                @if (customer.email) {
+                  <span class="detail-chip">
+                    <ion-icon name="mail-outline"></ion-icon>
+                    {{ customer.email }}
+                  </span>
+                }
+                @if (customer.address) {
+                  <span class="detail-chip detail-chip--address">
+                    <ion-icon name="location-outline"></ion-icon>
+                    {{ customer.address }}{{ customer.city ? ', ' + customer.city : '' }}
+                  </span>
+                }
+              </div>
+            }
+
+          </div>
+        }
+      </div>
+    }
+  }
+
+</ion-content>
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button (click)="addCustomer()" class="add-fab">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

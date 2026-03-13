@@ -119,40 +119,14 @@
   margin-bottom: 4px;
 }
 
-.full-width {
-  width: 100%;
-}
-
-.margin-10 {
-  --background:         rgba(0, 0, 0, 0.02);
-  --border-color:       rgba(0, 0, 0, 0.12);
-  --border-radius:      10px;
+.field-input {
+  --background:              #f5f6f8;
+  --border-radius:           10px;
   --highlight-color-focused: var(--brand);
-  --color:              var(--ink-1);
-  --min-height:         48px;
-  --padding-top:        8px;
-  --padding-bottom:     8px;
-  --inner-border-width: 0;
-  margin-bottom: 4px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-
-  ion-label {
-    --color: var(--ink-3) !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-  }
-
-  ion-input {
-    --color:             var(--ink-1);
-    --placeholder-color: rgba(0, 0, 0, 0.3);
-    font-size: 0.9rem;
-  }
-
-  &.item-has-focus {
-    border-color: var(--brand);
-    --border-color: var(--brand);
-  }
+  --highlight-color-valid:   var(--brand);
+  --color:                   var(--ink-1);
+  --placeholder-color:       var(--ink-3);
+  width: 100%;
 }
 
 .error-message {
@@ -225,21 +199,6 @@
   font-weight: 500;
 }
 
-// ─── Ionic ng-deep overrides ─────────────────────────────────────
-:host ::ng-deep {
-  .item-fill-solid {
-    --background:       rgba(0, 0, 0, 0.02);
-    --border-color:     rgba(0, 0, 0, 0.12);
-    --border-radius:    10px;
-    --inner-border-width: 0;
-    --highlight-height: 2px;
-  }
-
-  .item-has-focus {
-    --border-color:              var(--brand);
-    --highlight-color-focused:   var(--brand);
-  }
-}
 
 // ─── Responsive ──────────────────────────────────────────────────
 @media (max-width: 480px) {

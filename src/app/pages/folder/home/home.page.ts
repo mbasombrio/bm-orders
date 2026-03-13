@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { arrowForwardSharp, chevronForwardOutline, chevronForwardSharp, cubeOutline, cubeSharp, receiptOutline, receiptSharp } from 'ionicons/icons';
+import { arrowForwardSharp, chevronForwardOutline, chevronForwardSharp, cubeOutline, cubeSharp, peopleSharp, receiptOutline, receiptSharp } from 'ionicons/icons';
 import { Article } from 'src/app/models/article';
 import { StorageService } from 'src/app/services/storage.service';
 import { environment } from 'src/environments/environment';
@@ -43,7 +43,7 @@ export class HomePage implements OnInit {
   recentArticles: Article[] = [];
 
   constructor() {
-    addIcons({ receiptOutline, receiptSharp, chevronForwardOutline, chevronForwardSharp, cubeOutline, cubeSharp, arrowForwardSharp });
+    addIcons({ receiptOutline, receiptSharp, chevronForwardOutline, chevronForwardSharp, cubeOutline, cubeSharp, arrowForwardSharp, peopleSharp });
   }
 
   async ngOnInit() {

@@ -1,0 +1,224 @@
+// ─── Tokens ───────────────────────────────────────────────────────
+:host {
+  --brand:       #3c8dbc;
+  --brand-dark:  #2d6d94;
+  --brand-light: rgba(60, 141, 188, 0.14);
+  --surface:     rgba(255, 255, 255, 0.95);
+  --border-dark: rgba(0, 0, 0, 0.07);
+  --ink-1:       #0f1923;
+  --ink-2:       #4a5568;
+  --ink-3:       #8a96a3;
+}
+
+// ─── Section Label ────────────────────────────────────────────────
+.section-label {
+  margin: 0;
+  padding: 16px 16px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+// ─── Search Card ──────────────────────────────────────────────────
+.search-card {
+  margin: 0 16px;
+  background: #3c8dbc;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  padding: 8px 8px 10px;
+}
+
+.customer-searchbar {
+  --background:        rgba(255, 255, 255, 0.95);
+  --border-radius:     10px;
+  --box-shadow:        none;
+  --placeholder-color: var(--ink-3);
+  --color:             var(--ink-1);
+  --icon-color:        var(--brand);
+  --clear-button-color: var(--brand);
+  padding: 0;
+}
+
+// ─── Results Row ──────────────────────────────────────────────────
+.results-row {
+  padding: 10px 20px 4px;
+}
+
+.results-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+// ─── States ──────────────────────────────────────────────────────
+.center-spinner {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 16px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.85rem;
+  text-align: center;
+
+  ion-icon {
+    font-size: 2.5rem;
+    opacity: 0.4;
+  }
+}
+
+// ─── Customer List ────────────────────────────────────────────────
+.customer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 16px 96px;
+}
+
+.customer-card {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 14px 14px 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: opacity 0.15s;
+
+  &:active {
+    transform: scale(0.985);
+  }
+}
+
+// ─── Card Top ─────────────────────────────────────────────────────
+.customer-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.customer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3c8dbc 0%, #2d6d94 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.customer-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.customer-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.customer-dni {
+  font-size: 0.72rem;
+  color: var(--ink-3);
+  font-family: ui-monospace, 'SF Mono', monospace;
+}
+
+// ─── Type Badge ───────────────────────────────────────────────────
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  background: var(--brand-light);
+  color: var(--brand-dark);
+
+  &.type-badge--mayorista { background: rgba(245, 158, 11, 0.12); color: #7a4f00; }
+  &.type-badge--minorista { background: var(--brand-light);        color: var(--brand-dark); }
+}
+
+// ─── Delete Button ────────────────────────────────────────────────
+.delete-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: rgba(0, 0, 0, 0.2);
+  font-size: 1.1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+
+  &:active {
+    background: rgba(235, 68, 90, 0.1);
+    color: #eb445a;
+  }
+}
+
+// ─── Detail Chips ─────────────────────────────────────────────────
+.customer-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-dark);
+}
+
+.detail-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--ink-3);
+  font-weight: 500;
+
+  ion-icon {
+    font-size: 0.85rem;
+    color: var(--brand);
+    flex-shrink: 0;
+  }
+
+  &.detail-chip--address {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// ─── FAB ─────────────────────────────────────────────────────────
+.add-fab {
+  --background:           var(--brand);
+  --background-activated: var(--brand-dark);
+  --color:                #ffffff;
+  --box-shadow:           0 4px 16px rgba(60, 141, 188, 0.45);
+}

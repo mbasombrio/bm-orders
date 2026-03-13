@@ -27,11 +27,9 @@
         <form *ngIf="loginForm" [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
           <!-- Client field -->
           <div class="form-field" *ngIf="checkMulticlient()">
-            <ion-item class="full-width margin-10">
-              <ion-label position="floating">Cliente</ion-label>
-              <ion-input formControlName="client" #cliente (keyup.enter)="onLogin()" autofocus required>
-              </ion-input>
-            </ion-item>
+            <ion-input class="field-input" fill="solid" label="Cliente" label-placement="floating"
+              formControlName="client" #cliente (keyup.enter)="onLogin()" autofocus required>
+            </ion-input>
             <div class="error-message" *ngIf="hasError('client', 'required') && loginForm.get('client')?.touched">
               Complete el campo cliente
             </div>
@@ -39,11 +37,9 @@
 
           <!-- Username field -->
           <div class="form-field">
-            <ion-item class="full-width margin-10">
-              <ion-label position="floating">Usuario</ion-label>
-              <ion-input formControlName="user" #username (keyup.enter)="onLogin()" required>
-              </ion-input>
-            </ion-item>
+            <ion-input class="field-input" fill="solid" label="Usuario" label-placement="floating"
+              formControlName="user" #username (keyup.enter)="onLogin()" required>
+            </ion-input>
             <div class="error-message" *ngIf="hasError('user', 'required') && loginForm.get('user')?.touched">
               Complete el campo usuario
             </div>
@@ -51,12 +47,10 @@
 
           <!-- Password field -->
           <div class="form-field">
-            <ion-item class="full-width margin-10">
-              <ion-label position="floating">Contraseña</ion-label>
-              <ion-input formControlName="pass" #password [type]="showPassword ? 'text' : 'password'"
-                (keyup.enter)="onLogin()" required>
-              </ion-input>
-            </ion-item>
+            <ion-input class="field-input" fill="solid" label="Contraseña" label-placement="floating"
+              formControlName="pass" #password [type]="showPassword ? 'text' : 'password'"
+              (keyup.enter)="onLogin()" required>
+            </ion-input>
             <div class="error-message" *ngIf="hasError('pass', 'required') && loginForm.get('pass')?.touched">
               Complete el campo contraseña
             </div>

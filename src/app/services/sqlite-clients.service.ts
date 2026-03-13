@@ -102,4 +102,71 @@ export class SqliteClientsService {
       };
     });
   }
+
+  async getCustomerById(id: number): Promise<Customer | undefined> {
+    const db = await this.indexedDbService.getDb();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([this.storeName], 'readonly');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.get(id);
+
+      request.onsuccess = () => {
+        resolve(request.result || undefined);
+      };
+
+      request.onerror = () => {
+        reject(request.error);
+      };
+    });
+  }
+
+  async saveCustomer(customer: Customer): Promise<void> {
+    const db = await this.indexedDbService.getDb();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([this.storeName], 'readwrite');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.put(customer);
+
+      request.onsuccess = () => {
+        this.loadCustomers();
+        resolve();
+      };
+
+      request.onerror = () => {
+        reject(request.error);
+      };
+    });
+  }
+
+  async deleteCustomer(id: number): Promise<void> {
+    const db = await this.indexedDbService.getDb();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([this.storeName], 'readwrite');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.delete(id);
+
+      request.onsuccess = () => {
+        this.loadCustomers();
+        resolve();
+      };
+
+      request.onerror = () => {
+        reject(request.error);
+      };
+    });
+  }
+
+  searchCustomers(term: string): Customer[] {
+    const customers = this.customersSubject.getValue();
+    if (!term || term.trim() === '') return customers;
+
+    const search = term.toLowerCase().trim();
+    return customers.filter(c =>
+      (c.name && c.name.toLowerCase().includes(search)) ||
+      (c.lastName && c.lastName.toLowerCase().includes(search)) ||
+      (c.dni && String(c.dni).toLowerCase().includes(search)) ||
+      (c.email && c.email.toLowerCase().includes(search)) ||
+      (c.cellphone && c.cellphone.toLowerCase().includes(search))
+    );
+  }
 }

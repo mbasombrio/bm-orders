@@ -40,6 +40,21 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'customers',
+    loadComponent: () => import('./pages/folder/customers/customers.page').then(m => m.CustomersPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'customer-add',
+    loadComponent: () => import('./pages/folder/customer-add/customer-add.page').then(m => m.CustomerAddPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'customer-add/:id',
+    loadComponent: () => import('./pages/folder/customer-add/customer-add.page').then(m => m.CustomerAddPage),
+    canActivate: [authGuard],
+  },
+  {
     path: 'folder/:id',
     component: FolderPage,
     canActivate: [authGuard],

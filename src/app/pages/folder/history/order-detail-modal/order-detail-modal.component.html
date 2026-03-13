@@ -20,7 +20,7 @@
     <div class="hero-meta">
       <span>{{ order.open ? formatDate(order.open) : 'N/A' }}</span>
       <span class="hero-meta-sep">·</span>
-      <span>{{ order.branch?.businessName || 'N/A' }}</span>
+      <span>{{ order.branch.businessName || 'N/A' }}</span>
     </div>
   </div>
 
@@ -48,7 +48,7 @@
     </div>
 
     <!-- Dirección de entrega (solo si es domicilio) -->
-    @if (order.send === 'delivery' && order.customerDelivery?.address) {
+    @if (order.send === 'delivery' && order.customerDelivery.address) {
       <div class="info-chip info-chip--delivery">
         <ion-icon name="location-outline"></ion-icon>
         <span>{{ order.customerDelivery.address }}{{ order.customerDelivery.city ? ', ' + order.customerDelivery.city : '' }}</span>

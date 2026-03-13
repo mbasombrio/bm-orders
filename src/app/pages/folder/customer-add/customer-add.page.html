@@ -1,0 +1,248 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/customers"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ title() }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ title() }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  @if (loading()) {
+    <div style="display: flex; justify-content: center; padding: 40px;">
+      <ion-spinner></ion-spinner>
+    </div>
+  } @else {
+    <form [formGroup]="customerForm">
+
+      <!-- Datos Personales -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title class="section-title">Datos Personales</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12" sizeMd="6">
+                <ion-item>
+                  <ion-label position="stacked">Nombre *</ion-label>
+                  <ion-input formControlName="name" placeholder="Nombre del cliente"></ion-input>
+                </ion-item>
+                @if (customerForm.controls['name'].touched && customerForm.controls['name'].hasError('required')) {
+                  <ion-note color="danger" class="field-error">Campo requerido</ion-note>
+                }
+              </ion-col>
+              <ion-col size="12" sizeMd="6">
+                <ion-item>
+                  <ion-label position="stacked">Apellido</ion-label>
+                  <ion-input formControlName="lastName" placeholder="Apellido"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12" sizeMd="4">
+                <ion-item>
+                  <ion-label position="stacked">DNI *</ion-label>
+                  <ion-input formControlName="dni" type="number" placeholder="DNI/CUIT"></ion-input>
+                </ion-item>
+                @if (customerForm.controls['dni'].touched && customerForm.controls['dni'].hasError('required')) {
+                  <ion-note color="danger" class="field-error">Campo requerido</ion-note>
+                }
+              </ion-col>
+              <ion-col size="12" sizeMd="4">
+                <ion-item>
+                  <ion-label position="stacked">Email</ion-label>
+                  <ion-input formControlName="email" type="email" placeholder="correo@ejemplo.com"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col size="12" sizeMd="4">
+                <ion-item>
+                  <ion-label position="stacked">Celular</ion-label>
+                  <ion-input formControlName="cellphone" type="tel" placeholder="Teléfono"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Dirección -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title class="section-title">Dirección</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12" sizeMd="6">
+                <ion-item>
+                  <ion-label position="stacked">Dirección</ion-label>
+                  <ion-input formControlName="address" placeholder="Calle y número"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col size="12" sizeMd="6">
+                <ion-item>
+                  <ion-label position="stacked">Código Postal</ion-label>
+                  <ion-input formControlName="zipCode" placeholder="C.P."></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12" sizeMd="4">
+                <ion-item>
+                  <ion-label position="stacked">Barrio</ion-label>
+                  <ion-input formControlName="district" placeholder="Barrio"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col size="12" sizeMd="4">
+                <ion-item>
+                  <ion-label position="stacked">Localidad</ion-label>
+                  <ion-input formControlName="city" placeholder="Localidad"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col size="12" sizeMd="4">
+                <ion-item>
+                  <ion-label position="stacked">Provincia</ion-label>
+                  <ion-input formControlName="state" placeholder="Provincia"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Configuración -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title class="section-title">Adicionales</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12" sizeMd="6">
+                <ion-item>
+                  <ion-label position="stacked">Sucursal</ion-label>
+                  <ion-select formControlName="branch">
+                    <ion-select-option [value]="0">TODAS</ion-select-option>
+                    @for (branch of branches(); track branch.id) {
+                      <ion-select-option [value]="branch.id">{{ branch.businessName }}</ion-select-option>
+                    }
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+              <ion-col size="12" sizeMd="6">
+                <ion-item>
+                  <ion-label position="stacked">Lista de Precios</ion-label>
+                  <ion-select formControlName="listPrice">
+                    <ion-select-option value="0">TODAS</ion-select-option>
+                    <ion-select-option value="1">Precio 1</ion-select-option>
+                    <ion-select-option value="2">Precio 2</ion-select-option>
+                    <ion-select-option value="3">Precio 3</ion-select-option>
+                    <ion-select-option value="4">Precio 4</ion-select-option>
+                    <ion-select-option value="5">Precio 5</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12" sizeMd="4">
+                <ion-item>
+                  <ion-label position="stacked">Situación IVA</ion-label>
+                  <ion-select formControlName="ivaSituation">
+                    @for (key of ivaOptions; track key) {
+                      <ion-select-option [value]="key">{{ clientsService.ivaSituation[key] }}</ion-select-option>
+                    }
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+              <ion-col size="12" sizeMd="4">
+                <ion-item>
+                  <ion-label position="stacked">Tipo</ion-label>
+                  <ion-select formControlName="customerType">
+                    <ion-select-option value="MINORISTA">Minorista</ion-select-option>
+                    <ion-select-option value="MAYORISTA">Mayorista</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+              <ion-col size="12" sizeMd="4">
+                <ion-item>
+                  <ion-label position="stacked">Cuenta Corriente</ion-label>
+                  <ion-select formControlName="checkingAccountEnabled">
+                    <ion-select-option [value]="true">Si</ion-select-option>
+                    <ion-select-option [value]="false">No</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+              <ion-col size="12" sizeMd="4">
+                <ion-item>
+                  <ion-label position="stacked">Límite Cta. Cte.</ion-label>
+                  <ion-input formControlName="ctaCteLimitAmount" type="number" placeholder="0"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <ion-item>
+                  <ion-label position="stacked">Observación</ion-label>
+                  <ion-textarea formControlName="observation" placeholder="Observaciones..." rows="3"></ion-textarea>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+          <!-- E-commerce -->
+          <div class="ecommerce-section">
+            <p class="ecommerce-title">E-commerce</p>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12" sizeMd="6">
+                  <ion-item>
+                    <ion-label position="stacked">Usuario</ion-label>
+                    <ion-input formControlName="userName" placeholder="Nombre de usuario"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="12" sizeMd="6">
+                  <ion-item>
+                    <ion-label position="stacked">Contraseña</ion-label>
+                    <ion-input formControlName="password" type="password" placeholder="Contraseña (mín. 4 caracteres)"></ion-input>
+                  </ion-item>
+                  @if (customerForm.controls['password'].touched && customerForm.controls['password'].hasError('minlength')) {
+                    <ion-note color="danger" class="field-error">Mínimo 4 caracteres</ion-note>
+                  }
+                </ion-col>
+              </ion-row>
+              @if (customerForm.hasError('passwordAndUserNameMismatch')) {
+                <ion-row>
+                  <ion-col>
+                    <ion-note color="danger" class="field-error">
+                      Ambos campos, usuario y contraseña, deben ser completados.
+                    </ion-note>
+                  </ion-col>
+                </ion-row>
+              }
+            </ion-grid>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Botón Guardar -->
+      <div class="save-button-container">
+        <ion-button expand="block" (click)="trySave()" [disabled]="loading()" color="success">
+          @if (loading()) {
+            <ion-spinner name="crescent"></ion-spinner>
+          } @else {
+            <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+            Confirmar
+          }
+        </ion-button>
+      </div>
+
+    </form>
+  }
+</ion-content>

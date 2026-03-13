@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { catchError, Observable, retry, throwError, timeout } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -13,9 +13,16 @@ export class ClientsService {
   private http = inject(HttpClient);
   private service = signal<string>(`${environment.url}customerService`)
 
-  private readonly TIMEOUT_MS = 120000; // 2 minutos
+  private readonly TIMEOUT_MS = 120000;
   private readonly MAX_RETRIES = 3;
-  private readonly RETRY_DELAY = 2000; // 2 segundos entre reintentos
+  private readonly RETRY_DELAY = 2000;
+
+  ivaSituation: { [key: string]: string } = {
+    CONSUMIDOR_FINAL: 'Consumidor Final',
+    RESPONSABLE_MONOTRIBUTO: 'Responsable Monotributo',
+    RESPONSABLE_INSCRIPTO: 'Responsable Inscripto',
+    IVA_EXENTO: 'Iva Exento',
+  };
 
   getCustomers(): Observable<ResponseDTO<Customer>> {
     return this.http.get<ResponseDTO<Customer>>(`${this.service()}/customersList`, {
@@ -40,6 +47,53 @@ export class ClientsService {
       }),
       catchError(this.handleError.bind(this))
     );
+  }
+
+  searchCustomers(page: string, customer: Customer, birthMonth?: string, zone?: number): Observable<ResponseDTO<Customer>> {
+    let params = new HttpParams();
+    if (customer.name) params = params.set('name', customer.name);
+    if (customer.dni && Number(customer.dni) > 0) params = params.set('dni', customer.dni.toString());
+    if (customer.userName) params = params.set('userName', customer.userName);
+    params = params.set('checkingaccount', customer.checkingAccountEnabled ? 'true' : 'false');
+    params = params.set('onlyenabled', customer.enabled ? 'true' : 'false');
+    if (birthMonth) params = params.set('birthMonth', birthMonth);
+    if (zone) params = params.set('zone', zone.toString());
+
+    return this.http.get<ResponseDTO<Customer>>(`${this.service()}/listSearch/${page}`, { params }).pipe(
+      timeout(this.TIMEOUT_MS),
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  getCustomerById(id: number): Observable<Customer> {
+    return this.http.get<Customer>(`${this.service()}/getCustomer/${id}`).pipe(
+      timeout(this.TIMEOUT_MS),
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  saveCustomer(customer: Customer): Observable<Customer> {
+    return this.http.post<Customer>(`${this.service()}`, customer).pipe(
+      timeout(this.TIMEOUT_MS),
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  updateCustomer(customer: Customer): Observable<Customer> {
+    return this.http.put<Customer>(`${this.service()}`, customer).pipe(
+      timeout(this.TIMEOUT_MS),
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  getName(name: string, lastName: string, separator: string, invertir: boolean): string {
+    const nameClient = name || '';
+    const lastNameClient = lastName || '';
+    if (!nameClient && !lastNameClient) return '';
+    const first = invertir ? lastNameClient : nameClient;
+    const second = invertir ? nameClient : lastNameClient;
+    const sep = first && second ? separator : ' ';
+    return first + sep + ' ' + second;
   }
 
   private shouldRetry(error: any): boolean {
@@ -83,7 +137,7 @@ export class ClientsService {
           errorMessage = error.error?.message || `Error del servidor: ${error.status}`;
       }
     } else {
-      errorMessage = 'Error desconocido al importar clientes.';
+      errorMessage = 'Error desconocido al procesar la solicitud.';
     }
 
     console.error('Error en ClientsService:', error);

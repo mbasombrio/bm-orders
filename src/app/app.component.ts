@@ -4,7 +4,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/ro
 import { IonApp, IonContent, IonHeader, IonIcon, IonMenu, IonMenuToggle, IonRouterOutlet, IonToolbar } from '@ionic/angular/standalone';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { addIcons } from 'ionicons';
-import { cubeOutline, homeOutline, listOutline, timeOutline, logOutOutline, cloudDownloadOutline, personCircleOutline } from 'ionicons/icons';
+import { cubeOutline, homeOutline, listOutline, timeOutline, logOutOutline, cloudDownloadOutline, personCircleOutline, peopleOutline } from 'ionicons/icons';
 import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
 import { PwaService } from './services/pwa.service';
@@ -22,10 +22,11 @@ export class AppComponent implements OnInit {
   private swUpdate = inject(SwUpdate, { optional: true });
 
   public appPages = [
-    { title: 'Inicio',    url: '/home',    icon: 'home-outline' },
-    { title: 'Pedidos',   url: '/orders',  icon: 'list-outline' },
-    { title: 'Historial', url: '/history', icon: 'time-outline' },
-    { title: 'Datos',     url: '/data',    icon: 'cube-outline' },
+    { title: 'Inicio',    url: '/home',      icon: 'home-outline'   },
+    { title: 'Pedidos',   url: '/orders',    icon: 'list-outline'   },
+    { title: 'Historial', url: '/history',   icon: 'time-outline'   },
+    { title: 'Clientes',  url: '/customers', icon: 'people-outline' },
+    { title: 'Datos',     url: '/data',      icon: 'cube-outline'   },
   ];
 
   isLoginPage: boolean = false;
@@ -37,7 +38,7 @@ export class AppComponent implements OnInit {
     private pwaService: PwaService,
     private storage: StorageService
   ) {
-    addIcons({ homeOutline, listOutline, timeOutline, cubeOutline, logOutOutline, cloudDownloadOutline, personCircleOutline });
+    addIcons({ homeOutline, listOutline, timeOutline, cubeOutline, logOutOutline, cloudDownloadOutline, personCircleOutline, peopleOutline });
   }
 
   ngOnInit() {
