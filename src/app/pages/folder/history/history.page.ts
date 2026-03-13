@@ -7,7 +7,6 @@ import { receiptOutline, chevronBackOutline, chevronForwardOutline } from 'ionic
 import { BasketService } from 'src/app/services/basket.service';
 import { BasketOrder, BasketOrderState } from 'src/app/models/basket-order';
 import { PERIODS, setPeriodChange } from 'src/app/utils/periods.utils';
-import moment from 'moment';
 import { OrderDetailModalComponent } from './order-detail-modal/order-detail-modal.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { MoneyService } from 'src/app/services/money.service';
@@ -41,8 +40,8 @@ export class HistoryPage implements OnInit {
     this.form = new FormGroup({
       page: new FormControl(1),
       period: new FormControl('today'),
-      dateFrom: new FormControl(moment().format('YYYY-MM-DD')),
-      dateTo: new FormControl(moment().format('YYYY-MM-DD')),
+      dateFrom: new FormControl(this.formatDateISO(new Date())),
+      dateTo: new FormControl(this.formatDateISO(new Date())),
       basketId: new FormControl(''),
       customerName: new FormControl(''),
       state: new FormControl('pending'),
@@ -69,8 +68,8 @@ export class HistoryPage implements OnInit {
 
     const params = {
       page: this.form.get('page')?.value,
-      dateFrom: moment(this.form.get('dateFrom')?.value).format('MM/DD/YYYY') + ' 00:00:00',
-      dateTo: moment(this.form.get('dateTo')?.value).format('MM/DD/YYYY') + ' 23:59:59',
+      dateFrom: this.formatDateUS(this.form.get('dateFrom')?.value) + ' 00:00:00',
+      dateTo: this.formatDateUS(this.form.get('dateTo')?.value) + ' 23:59:59',
       basketId: this.form.get('basketId')?.value || null,
       customerName: this.form.get('customerName')?.value || null,
       state: this.form.get('state')?.value === 'TODOS' ? null : this.form.get('state')?.value,
@@ -99,7 +98,26 @@ export class HistoryPage implements OnInit {
   }
 
   formatDate(date: Date): string {
-    return moment(date).format('DD/MM/YYYY HH:mm');
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  }
+
+  private formatDateISO(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  private formatDateUS(value: string): string {
+    // value is 'YYYY-MM-DD'
+    const [y, m, d] = value.split('-');
+    return `${m}/${d}/${y}`;
   }
 
   formatCurrency(amount: number): string {
