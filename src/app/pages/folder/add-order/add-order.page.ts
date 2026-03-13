@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController, ModalController } from '@ionic/angular';
-import { IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonSearchbar, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonSearchbar, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToast, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { bagOutline, chevronForwardOutline, eyeOutline, searchOutline, trash } from 'ionicons/icons';
 import { Article } from 'src/app/models/article';
@@ -45,7 +45,8 @@ import { CustomerSelectionModalComponent } from './customer-selection-modal.comp
     IonItemOptions,
     IonItemOption,
     IonTextarea,
-    IonFooter
+    IonFooter,
+    IonToast
   ],
   providers: [ModalController]
 })
@@ -69,6 +70,7 @@ export class AddOrderPage implements OnInit {
     private sqliteClientsService: SqliteClientsService,
     private sqliteArticlesService: SqliteArticlesService,
     private alertController: AlertController,
+    private toastController: ToastController,
     private sqliteBranchService: SqliteBranchService,
     private ordersManagerService: OrdersManagerService,
     private router: Router,
@@ -275,6 +277,16 @@ export class AddOrderPage implements OnInit {
     this.totalAmount = this.orderItems.reduce((total, item) => total + (item.quantity * item.unitPrice), 0);
   }
 
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2500,
+      position: 'bottom',
+      color: 'success'
+    });
+    await toast.present();
+  }
+
   async presentAlert(header: string, message: string) {
     const alert = await this.alertController.create({
       header,
@@ -391,10 +403,10 @@ export class AddOrderPage implements OnInit {
     try {
       if (this.orderToEdit) {
         await this.ordersManagerService.updateOrder(newOrder);
-        this.presentAlert('Éxito', 'Pedido actualizado correctamente.');
+        this.presentToast('Pedido actualizado correctamente.');
       } else {
         await this.ordersManagerService.createOrder(newOrder);
-        this.presentAlert('Éxito', 'Pedido guardado correctamente.');
+        this.presentToast('Pedido guardado correctamente.');
       }
       this.orderEditDataService.clearOrder();
       this.router.navigate(['/orders']);

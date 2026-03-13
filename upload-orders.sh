@@ -108,11 +108,7 @@ update_package_version "$new_version"
 # Commit version change
 echo "💾 Committing version change..."
 git add package.json
-git commit -m "chore: bump version to $new_version
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude <noreply@anthropic.com>"
+git commit -m "chore: bump version to $new_version"
 
 # Create git tag
 echo "🏷️  Creating tag v$new_version..."
@@ -141,7 +137,8 @@ if [ $? -eq 0 ]; then
         echo "📦 Version deployed: $new_version"
         echo "⚠️  IMPORTANTE: Solicitar invalidación manual de CloudFront con path: /*"
         echo ""
-        echo "📌 Don't forget to push the tag: git push origin v$new_version"
+        echo "🚀 Pushing commit and tags..."
+        git push && git push --tags
         echo ""
     else
         echo "❌ Upload failed!"

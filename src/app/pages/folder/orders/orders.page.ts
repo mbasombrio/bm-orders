@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { BasketService } from './../../../services/basket.service';
 
-import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonMenuButton, IonTitle, IonToast, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addSharp, businessOutline, carOutline, createOutline, receiptOutline, sendOutline, storefrontOutline, trashOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
@@ -36,7 +36,8 @@ import { toLong } from 'src/app/utils/money.util';
     IonItemOptions,
     IonItemOption,
     IonFab,
-    IonFabButton
+    IonFabButton,
+    IonToast
   ]
 })
 export class OrdersPage implements OnInit, OnDestroy {
@@ -67,6 +68,7 @@ export class OrdersPage implements OnInit, OnDestroy {
 
   constructor(
     private alertController: AlertController,
+    private toastController: ToastController,
     private sqliteOrdersService: SqliteOrdersService,
     private orderEditDataService: OrderEditDataService,
     private loadingController: LoadingController
@@ -399,20 +401,12 @@ export class OrdersPage implements OnInit, OnDestroy {
   }
 
   async showToast(message: string) {
-
-
-    // You could also show an alert as a simple notification
-    const alert = await this.alertController.create({
-      message: message,
-      buttons: ['OK']
+    const toast = await this.toastController.create({
+      message,
+      duration: 2500,
+      position: 'bottom'
     });
-
-    await alert.present();
-
-    // Auto dismiss after 2 seconds
-    setTimeout(() => {
-      alert.dismiss();
-    }, 2000);
+    await toast.present();
   }
 
   addNewOrder() {
