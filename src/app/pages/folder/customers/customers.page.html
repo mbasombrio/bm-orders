@@ -67,7 +67,7 @@
                   {{ customer.customerType }}
                 </span>
               }
-              <button class="delete-btn" (click)="$event.stopPropagation(); confirmDelete(customer)">
+              <button class="delete-btn" (click)="onDeleteClick($event, customer)">
                 <ion-icon name="trash-outline"></ion-icon>
               </button>
             </div>

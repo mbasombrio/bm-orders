@@ -1,13 +1,13 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonButtons,
   IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel,
   IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonGrid,
   IonRow, IonCol, IonIcon, IonBackButton, IonTextarea, IonNote,
-  AlertController
+  AlertController, NavController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { checkmarkOutline, arrowBackOutline } from 'ionicons/icons';
@@ -45,7 +45,7 @@ export class CustomerAddPage implements OnInit {
     public clientsService: ClientsService,
     private sqliteClientsService: SqliteClientsService,
     private authService: AuthService,
-    private router: Router,
+    private navController: NavController,
     private activatedRoute: ActivatedRoute,
     private alertController: AlertController,
     private bmToast: BmToastService
@@ -84,7 +84,7 @@ export class CustomerAddPage implements OnInit {
       error: () => {
         this.loading.set(false);
         this.showToast('Cliente no encontrado', 'danger');
-        this.router.navigate(['/customers']);
+        this.navController.navigateBack('/customers');
       }
     });
   }
@@ -192,9 +192,8 @@ export class CustomerAddPage implements OnInit {
       next: async (savedCustomer: any) => {
         const customerToStore = savedCustomer || this.customer();
         await this.sqliteClientsService.saveCustomer(customerToStore);
-        this.loading.set(false);
         await this.showAlert('Cliente creado correctamente');
-        this.router.navigate(['/customers']);
+        this.navController.navigateBack('/customers');
       },
       error: (error) => this.showError(error)
     });
@@ -206,9 +205,8 @@ export class CustomerAddPage implements OnInit {
       next: async (updatedCustomer: any) => {
         const customerToStore = updatedCustomer || this.customer();
         await this.sqliteClientsService.saveCustomer(customerToStore);
-        this.loading.set(false);
         await this.showAlert('Cliente actualizado correctamente');
-        this.router.navigate(['/customers']);
+        this.navController.navigateBack('/customers');
       },
       error: (error) => this.showError(error)
     });

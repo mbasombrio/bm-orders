@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addOutline, callOutline, mailOutline, peopleOutline, trashOutline, locationOutline } from 'ionicons/icons';
-import { Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { Customer } from 'src/app/models/customer';
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
 import { ClientsService } from 'src/app/services/clients.service';
@@ -27,7 +27,7 @@ import { BmToastService } from 'src/app/services/bm-toast.service';
     IonFab, IonFabButton
   ]
 })
-export class CustomersPage implements OnInit, OnDestroy {
+export class CustomersPage implements OnDestroy {
   customers: Customer[] = [];
   filteredCustomers: Customer[] = [];
   loading = signal(false);
@@ -46,21 +46,29 @@ export class CustomersPage implements OnInit, OnDestroy {
     addIcons({ addOutline, callOutline, mailOutline, peopleOutline, trashOutline, locationOutline });
   }
 
-  ngOnInit() {
-    this.loadCustomers();
-  }
-
   ionViewWillEnter() {
     this.loadCustomers();
   }
 
   loadCustomers() {
     this.loading.set(true);
-    this.customersSubscription = this.sqliteClientsService.customers$.subscribe(customers => {
-      this.customers = customers;
-      this.applyFilter();
-      this.totalCount = customers.length;
-      this.loading.set(false);
+    this.clientsService.getCustomers().subscribe({
+      next: async (response) => {
+        await this.sqliteClientsService.replaceAllClients(response.rows);
+        this.customers = response.rows;
+        this.applyFilter();
+        this.totalCount = response.rows.length;
+        this.loading.set(false);
+      },
+      error: () => {
+        // Fallback a IndexedDB si el servidor no responde
+        this.customersSubscription = this.sqliteClientsService.customers$.subscribe(customers => {
+          this.customers = customers;
+          this.applyFilter();
+          this.totalCount = customers.length;
+          this.loading.set(false);
+        });
+      }
     });
   }
 
@@ -85,6 +93,12 @@ export class CustomersPage implements OnInit, OnDestroy {
     this.router.navigate(['/customer-add', customer.id]);
   }
 
+  onDeleteClick(event: Event, customer: Customer) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.confirmDelete(customer);
+  }
+
   async confirmDelete(customer: Customer) {
     const alert = await this.alertController.create({
       header: 'Eliminar cliente',
@@ -94,7 +108,7 @@ export class CustomersPage implements OnInit, OnDestroy {
         {
           text: 'Eliminar',
           role: 'destructive',
-          handler: () => this.deleteCustomer(customer)
+          handler: () => { this.deleteCustomer(customer); }
         }
       ]
     });
@@ -105,6 +119,7 @@ export class CustomersPage implements OnInit, OnDestroy {
     if (!customer.id) return;
     try {
       this.loading.set(true);
+      await firstValueFrom(this.clientsService.deleteCustomer(customer.id));
       await this.sqliteClientsService.deleteCustomer(customer.id);
       await this.bmToast.success('Cliente eliminado correctamente');
     } catch (error) {
