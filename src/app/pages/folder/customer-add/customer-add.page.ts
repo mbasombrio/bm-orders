@@ -6,7 +6,7 @@ import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonButtons,
   IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel,
   IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonGrid,
-  IonRow, IonCol, IonIcon, IonBackButton, IonTextarea, IonNote,
+  IonRow, IonCol, IonIcon, IonBackButton, IonTextarea, IonNote, IonFooter,
   AlertController, NavController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -24,7 +24,7 @@ import { BmToastService } from 'src/app/services/bm-toast.service';
   styleUrls: ['./customer-add.page.scss'],
   standalone: true,
   imports: [
-    IonContent, IonHeader, IonTitle, IonToolbar, IonButtons,
+    IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonFooter,
     IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel,
     IonInput, IonButton, IonSelect, IonSelectOption, IonSpinner, IonGrid,
     IonRow, IonCol, IonIcon, IonBackButton, IonTextarea, IonNote,

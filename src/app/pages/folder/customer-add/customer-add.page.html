@@ -221,18 +221,18 @@
         </ion-card-content>
       </ion-card>
 
-      <!-- Botón Guardar -->
-      <div class="save-button-container">
-        <ion-button expand="block" (click)="trySave()" [disabled]="loading()" color="success">
-          @if (loading()) {
-            <ion-spinner name="crescent"></ion-spinner>
-          } @else {
-            <ion-icon name="checkmark-outline" slot="start"></ion-icon>
-            Confirmar
-          }
-        </ion-button>
-      </div>
-
     </form>
   }
 </ion-content>
+
+<ion-footer>
+  <div class="footer-wrap">
+    <ion-button expand="block" (click)="trySave()" [disabled]="loading() || customerForm.invalid" class="save-btn">
+      @if (loading()) {
+        <ion-spinner name="crescent"></ion-spinner>
+      } @else {
+        Guardar Cliente
+      }
+    </ion-button>
+  </div>
+</ion-footer>

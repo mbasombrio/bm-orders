@@ -33,7 +33,28 @@
   margin-bottom: 4px;
 }
 
-.save-button-container {
-  padding: 16px;
-  padding-bottom: 32px;
+ion-footer {
+  --background: transparent;
+  background: transparent;
+  border-top: none;
+
+  &::before {
+    display: none;
+  }
+}
+
+.footer-wrap {
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(10, 26, 39, 0.98) 0%, rgba(10, 26, 39, 0) 100%);
+}
+
+.save-btn {
+  --background:           #3c8dbc;
+  --background-activated: #2d6d94;
+  --border-radius:        12px;
+  --color:                #ffffff;
+  margin: 0;
+  height: 52px;
+  font-weight: 700;
+  font-size: 1rem;
 }
