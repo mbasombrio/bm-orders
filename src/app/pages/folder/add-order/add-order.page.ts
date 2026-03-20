@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
@@ -52,6 +52,7 @@ import { CustomerSelectionModalComponent } from './customer-selection-modal.comp
 export class AddOrderPage implements OnInit {
 
   customers: Customer[] = [];
+  @ViewChild('articleSearchbar') articleSearchbar!: IonSearchbar;
   branches: Branch[] = [];
   selectedCustomerId: number | null = null;
   selectedBranchId: number | null = null;
@@ -212,6 +213,21 @@ export class AddOrderPage implements OnInit {
           const quantityInput = alertElement.querySelector('#quantity-input') as HTMLInputElement;
           const stockMessageEl = alertElement.querySelector('#stock-message') as HTMLElement;
 
+          if (quantityInput) {
+            quantityInput.focus();
+            quantityInput.select();
+            quantityInput.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                const qty = parseInt(quantityInput.value, 10);
+                if (qty > 0) {
+                  alert.dismiss({ quantity: quantityInput.value });
+                  this.addArticleToOrder(article, qty);
+                }
+              }
+            });
+          }
+
           if (quantityInput && stockMessageEl) {
             quantityInput.addEventListener('input', () => {
               if (stockError) {
@@ -270,6 +286,8 @@ export class AddOrderPage implements OnInit {
       this.orderItems.push({ article, quantity, unitPrice });
     }
     this.calculateTotal();
+    this.searchQuery = '';
+    setTimeout(() => this.articleSearchbar?.setFocus(), 300);
   }
 
   calculateTotal() {
