@@ -258,7 +258,7 @@ export class AddOrderPage implements OnInit {
     if (price === 0) {
       price = (article['unitPrice1'] as number) || 0;
     }
-    return price;
+    return Math.round(price * 100) / 100;
   }
 
   addArticleToOrder(article: Article, quantity: number) {
