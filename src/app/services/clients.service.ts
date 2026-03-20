@@ -86,6 +86,13 @@ export class ClientsService {
     );
   }
 
+  deleteCustomer(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.service()}/${id}`).pipe(
+      timeout(this.TIMEOUT_MS),
+      catchError(this.handleError.bind(this))
+    );
+  }
+
   getName(name: string, lastName: string, separator: string, invertir: boolean): string {
     const nameClient = name || '';
     const lastNameClient = lastName || '';

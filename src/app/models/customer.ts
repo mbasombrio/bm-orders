@@ -3,6 +3,7 @@ import { User } from './user';
 
 export const ivaSituationConsumidorFinal = 'CONSUMIDOR_FINAL';
 export class Customer {
+
   id?: number;
   dni?: string;
   name?: string;
@@ -33,36 +34,37 @@ export class Customer {
   customerType?: string | null;
   lastModified?: Date | null;
 
-  constructor() {
-    this.id = undefined;
-    this.dni = undefined;
-    this.name = undefined;
-    this.lastName = undefined;
-    this.email = undefined;
-    this.cellphone = undefined;
-    this.address = undefined;
-    this.zipCode = undefined;
-    this.city = undefined;
-    this.checkingAccountEnabled = undefined;
-    this.password = '';
-    this.totalRewardPoints = undefined;
-    this.listPrice = 1;
-    this.user = new User();
-    this.alternativePhone = undefined;
-    this.district = undefined;
-    this.state = undefined;
-    this.preferedContactTime = undefined;
-    this.enabled = true;
-    this.branch = new Branch();
-    this.saldoFavor = 0;
-    this.userName = undefined;
-    this.observation = undefined;
-    this.birthdayDate = undefined;
-    this.ivaSituation = ivaSituationConsumidorFinal;
-    this.status = '';
-    this.ctaCteLimitAmount = 0;
-    this.customerType = undefined;
-  }
+	constructor() {
+		this.id = null;
+		this.dni = null;
+		this.name = null;
+		this.lastName = null;
+		this.email = null;
+		this.cellphone = null;
+		this.address = null;
+		this.zipCode = null;
+		this.city = null;
+		this.checkingAccountEnabled = null;
+		this.password = '';
+		this.totalRewardPoints = null;
+		this.listPrice = 1;
+		this.user = new User();
+		this.alternativePhone = null;
+		this.district = null;
+		this.state = null;
+		this.preferedContactTime = null;
+		this.enabled = true;
+		this.branch = new Branch();
+		this.saldoFavor = 0;
+		this.userName = null;
+		this.observation = null;
+		this.birthdayDate = null;
+		this.ivaSituation = ivaSituationConsumidorFinal;
+    this.status = null;
+		this.ctaCteLimitAmount = null;
+		this.customerType = null;
+    this.lastModified = null;
+	}
 }
 
 export class CustomerFilter {
