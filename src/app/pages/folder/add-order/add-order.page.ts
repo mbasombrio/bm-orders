@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonSearchbar, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { bagOutline, chevronForwardOutline, eyeOutline, searchOutline, trash } from 'ionicons/icons';
@@ -16,6 +16,7 @@ import { SqliteArticlesService } from 'src/app/services/sqlite-articles.service'
 import { SqliteClientsService } from 'src/app/services/sqlite-clients.service';
 import { SqliteBranchService } from 'src/app/services/sqllite-branch.service';
 import { ItemsService } from 'src/app/services/items.service';
+import { BmToastService } from 'src/app/services/bm-toast.service';
 import { ArticleSearchResultModalComponent } from './article-search-result-modal.component';
 import { CustomerDetailsModalComponent } from './customer-details-modal.component';
 import { CustomerSelectionModalComponent } from './customer-selection-modal.component';
@@ -70,7 +71,7 @@ export class AddOrderPage implements OnInit {
     private sqliteClientsService: SqliteClientsService,
     private sqliteArticlesService: SqliteArticlesService,
     private alertController: AlertController,
-    private toastController: ToastController,
+    private bmToast: BmToastService,
     private sqliteBranchService: SqliteBranchService,
     private ordersManagerService: OrdersManagerService,
     private router: Router,
@@ -295,13 +296,7 @@ export class AddOrderPage implements OnInit {
   }
 
   async presentToast(message: string) {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2500,
-      position: 'bottom',
-      color: 'success'
-    });
-    await toast.present();
+    await this.bmToast.success(message);
   }
 
   async presentAlert(header: string, message: string) {

@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AlertController, IonicModule, ToastController } from '@ionic/angular';
+import { AlertController, IonicModule } from '@ionic/angular';
 import { BasketOrder } from 'src/app/models/basket-order';
 import { BasketItem } from 'src/app/models/carrito';
 import { Customer } from 'src/app/models/customer';
 import { OrdersManagerService } from 'src/app/services/orders-manager.service';
 import { PreOrder } from 'src/app/services/pre-order.service';
+import { BmToastService } from 'src/app/services/bm-toast.service';
 
 
 @Component({
@@ -26,7 +27,7 @@ export class TestSqlitePage implements OnInit {
   constructor(
     private ordersManager: OrdersManagerService,
     private alertController: AlertController,
-    private toastController: ToastController
+    private bmToast: BmToastService
   ) {}
 
   ngOnInit() {
@@ -388,11 +389,6 @@ export class TestSqlitePage implements OnInit {
   }
 
   private async showToast(message: string) {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2000,
-      position: 'bottom'
-    });
-    await toast.present();
+    await this.bmToast.success(message);
   }
 }

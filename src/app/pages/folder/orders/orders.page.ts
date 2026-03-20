@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { BasketService } from './../../../services/basket.service';
 
 import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
@@ -14,6 +14,7 @@ import { ResponseDTO } from 'src/app/models/response';
 import { AuthService } from 'src/app/services/auth.service';
 import { OrderEditDataService } from 'src/app/services/order-edit-data.service';
 import { SqliteOrdersService } from 'src/app/services/sqlite-orders.service';
+import { BmToastService } from 'src/app/services/bm-toast.service';
 
 @Component({
   selector: 'app-orders',
@@ -66,7 +67,7 @@ export class OrdersPage implements OnInit, OnDestroy {
 
   constructor(
     private alertController: AlertController,
-    private toastController: ToastController,
+    private bmToast: BmToastService,
     private sqliteOrdersService: SqliteOrdersService,
     private orderEditDataService: OrderEditDataService,
     private loadingController: LoadingController
@@ -399,12 +400,7 @@ export class OrdersPage implements OnInit, OnDestroy {
   }
 
   async showToast(message: string) {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2500,
-      position: 'bottom'
-    });
-    await toast.present();
+    await this.bmToast.success(message);
   }
 
   addNewOrder() {
