@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { Network } from '@capacitor/network';
 import { SqliteOrdersService } from './sqlite-orders.service';
 import { OrdersService } from './orders.service';
-import { ToastController } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
+import { BmToastService } from './bm-toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,17 +11,12 @@ import { firstValueFrom } from 'rxjs';
 export class SyncService {
   private sqliteOrdersService = inject(SqliteOrdersService);
   private ordersService = inject(OrdersService);
-  private toastController = inject(ToastController);
+  private bmToast = inject(BmToastService);
 
   constructor() {
     Network.addListener('networkStatusChange', async (status) => {
       if (status.connected) {
-        const toast = await this.toastController.create({
-          message: 'Conexión recuperada. Sincronizando datos...',
-          duration: 2000,
-          color: 'success'
-        });
-        await toast.present();
+        await this.bmToast.success('Conexión recuperada. Sincronizando datos...');
         this.sincronizarPedidosPendientes();
       }
     });
@@ -50,12 +45,7 @@ export class SyncService {
     }
 
     if (successCount > 0) {
-      const toast = await this.toastController.create({
-        message: `${successCount} de ${pedidosPendientes.length} pedidos se han sincronizado correctamente.`,
-        duration: 3000,
-        color: 'success'
-      });
-      await toast.present();
+      await this.bmToast.success(`${successCount} de ${pedidosPendientes.length} pedidos se han sincronizado correctamente.`);
     }
   }
 }
