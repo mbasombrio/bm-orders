@@ -22,6 +22,17 @@
   margin-bottom: 8px;
 }
 
+.field-select {
+  --background:              #ffffff;
+  --border-radius:           10px;
+  --highlight-color-focused: #3c8dbc;
+  --highlight-color-valid:   #3c8dbc;
+  --color:                   #0f1923;
+  --placeholder-color:       #8a96a3;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
 .save-button-container {
   padding: 16px;
   padding-bottom: 32px;

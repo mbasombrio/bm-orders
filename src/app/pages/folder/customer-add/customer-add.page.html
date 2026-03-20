@@ -126,58 +126,48 @@
           <ion-grid>
             <ion-row>
               <ion-col size="12" sizeMd="6">
-                <ion-item>
-                  <ion-label position="stacked">Sucursal</ion-label>
-                  <ion-select formControlName="branch">
-                    <ion-select-option [value]="0">TODAS</ion-select-option>
-                    @for (branch of branches(); track branch.id) {
-                      <ion-select-option [value]="branch.id">{{ branch.businessName }}</ion-select-option>
-                    }
-                  </ion-select>
-                </ion-item>
+                <ion-select formControlName="branch" label="Sucursal" label-placement="stacked"
+                  placeholder="Seleccionar" interface="action-sheet" fill="solid" class="field-select">
+                  <ion-select-option [value]="0">TODAS</ion-select-option>
+                  @for (branch of branches(); track branch.id) {
+                    <ion-select-option [value]="branch.id">{{ branch.businessName }}</ion-select-option>
+                  }
+                </ion-select>
               </ion-col>
               <ion-col size="12" sizeMd="6">
-                <ion-item>
-                  <ion-label position="stacked">Lista de Precios</ion-label>
-                  <ion-select formControlName="listPrice">
-                    <ion-select-option value="0">TODAS</ion-select-option>
-                    <ion-select-option value="1">Precio 1</ion-select-option>
-                    <ion-select-option value="2">Precio 2</ion-select-option>
-                    <ion-select-option value="3">Precio 3</ion-select-option>
-                    <ion-select-option value="4">Precio 4</ion-select-option>
-                    <ion-select-option value="5">Precio 5</ion-select-option>
-                  </ion-select>
-                </ion-item>
+                <ion-select formControlName="listPrice" label="Lista de Precios" label-placement="stacked"
+                  placeholder="Seleccionar" interface="action-sheet" fill="solid" class="field-select">
+                  <ion-select-option value="0">TODAS</ion-select-option>
+                  <ion-select-option value="1">Precio 1</ion-select-option>
+                  <ion-select-option value="2">Precio 2</ion-select-option>
+                  <ion-select-option value="3">Precio 3</ion-select-option>
+                  <ion-select-option value="4">Precio 4</ion-select-option>
+                  <ion-select-option value="5">Precio 5</ion-select-option>
+                </ion-select>
               </ion-col>
             </ion-row>
             <ion-row>
               <ion-col size="12" sizeMd="4">
-                <ion-item>
-                  <ion-label position="stacked">Situación IVA</ion-label>
-                  <ion-select formControlName="ivaSituation">
-                    @for (key of ivaOptions; track key) {
-                      <ion-select-option [value]="key">{{ clientsService.ivaSituation[key] }}</ion-select-option>
-                    }
-                  </ion-select>
-                </ion-item>
+                <ion-select formControlName="ivaSituation" label="Situación IVA" label-placement="stacked"
+                  placeholder="Seleccionar" interface="action-sheet" fill="solid" class="field-select">
+                  @for (key of ivaOptions; track key) {
+                    <ion-select-option [value]="key">{{ clientsService.ivaSituation[key] }}</ion-select-option>
+                  }
+                </ion-select>
               </ion-col>
               <ion-col size="12" sizeMd="4">
-                <ion-item>
-                  <ion-label position="stacked">Tipo</ion-label>
-                  <ion-select formControlName="customerType">
-                    <ion-select-option value="MINORISTA">Minorista</ion-select-option>
-                    <ion-select-option value="MAYORISTA">Mayorista</ion-select-option>
-                  </ion-select>
-                </ion-item>
+                <ion-select formControlName="customerType" label="Tipo" label-placement="stacked"
+                  placeholder="Seleccionar" interface="action-sheet" fill="solid" class="field-select">
+                  <ion-select-option value="MINORISTA">Minorista</ion-select-option>
+                  <ion-select-option value="MAYORISTA">Mayorista</ion-select-option>
+                </ion-select>
               </ion-col>
               <ion-col size="12" sizeMd="4">
-                <ion-item>
-                  <ion-label position="stacked">Cuenta Corriente</ion-label>
-                  <ion-select formControlName="checkingAccountEnabled">
-                    <ion-select-option [value]="true">Si</ion-select-option>
-                    <ion-select-option [value]="false">No</ion-select-option>
-                  </ion-select>
-                </ion-item>
+                <ion-select formControlName="checkingAccountEnabled" label="Cuenta Corriente" label-placement="stacked"
+                  placeholder="Seleccionar" interface="action-sheet" fill="solid" class="field-select">
+                  <ion-select-option [value]="true">Si</ion-select-option>
+                  <ion-select-option [value]="false">No</ion-select-option>
+                </ion-select>
               </ion-col>
               <ion-col size="12" sizeMd="4">
                 <ion-item>
