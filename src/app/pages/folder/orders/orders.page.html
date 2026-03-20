@@ -38,7 +38,7 @@
                   {{ getDeliveryType(order) }}
                 </span>
               </div>
-              <div class="order-customer">{{ order.customer.name }}</div>
+              <div class="order-customer">{{ order.customer.name || 'Sin cliente' }}</div>
               <div class="order-card-footer">
                 <span class="order-date">{{ order.open | date: 'dd/MM/yyyy' }}</span>
                 <span class="order-total">{{ showTotal(order) | currency }}</span>

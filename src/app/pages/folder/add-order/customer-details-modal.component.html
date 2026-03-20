@@ -11,7 +11,7 @@
   <div *ngIf="customer">
     <ion-card class="ion-padding">
       <ion-card-header class="ion-text-center">
-        <ion-card-title>{{ customer.name }} {{ customer.lastName }}</ion-card-title>
+        <ion-card-title>{{ customer.name || '' }} {{ customer.lastName || '' }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-list>

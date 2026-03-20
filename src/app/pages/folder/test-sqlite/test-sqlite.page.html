@@ -115,7 +115,7 @@
             <ion-item *ngFor="let order of orders; trackBy: trackByOrderId">
               <ion-label>
                 <h3>Orden #{{ order.id }}</h3>
-                <p>Cliente: {{ order.customer.name }} {{ order.customer.lastName }}</p>
+                <p>Cliente: {{ order.customer.name || '' }} {{ order.customer.lastName || '' }}</p>
                 <p>Estado: {{ order.state }} | Total: ${{ order.totalAmount }}</p>
                 <p>Fecha: {{ order.open | date:'short' }}</p>
               </ion-label>
@@ -177,7 +177,7 @@
             <ion-item *ngFor="let preOrder of preOrders; trackBy: trackByPreOrderId">
               <ion-label>
                 <h3>Pre-orden {{ preOrder.tempId }}</h3>
-                <p>Cliente: {{ preOrder.customer.name }} {{ preOrder.customer.lastName }}</p>
+                <p>Cliente: {{ preOrder.customer.name || '' }} {{ preOrder.customer.lastName || '' }}</p>
                 <p>Estado: {{ preOrder.state }} | Total: ${{ preOrder.totalAmount }}</p>
                 <p>Creada: {{ preOrder.createdAt | date:'short' }}</p>
               </ion-label>

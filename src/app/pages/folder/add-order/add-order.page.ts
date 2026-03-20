@@ -459,7 +459,7 @@ export class AddOrderPage implements OnInit {
 
   getSelectedCustomerName(): string {
     const customer = this.customers.find(c => c.id === this.selectedCustomerId);
-    return customer ? `${customer.name} ${customer.lastName}` : '';
+    return customer ? `${customer.name || ''} ${customer.lastName || ''}`.trim() : '';
   }
 
   async showCustomerDetails() {
