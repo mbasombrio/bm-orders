@@ -14,7 +14,6 @@ import { ResponseDTO } from 'src/app/models/response';
 import { AuthService } from 'src/app/services/auth.service';
 import { OrderEditDataService } from 'src/app/services/order-edit-data.service';
 import { SqliteOrdersService } from 'src/app/services/sqlite-orders.service';
-import { toLong } from 'src/app/utils/money.util';
 
 @Component({
   selector: 'app-orders',
@@ -470,10 +469,11 @@ export class OrdersPage implements OnInit, OnDestroy {
         ...new Carrito(),
         listadoArticulos: order.items.map(item => ({
           ...item,
-          unitPrice: toLong(item.unitPrice * 100),
+          date: null,
+          unitPrice: Math.round(item.unitPrice * 100),
         })),
         user: user || null,
-        customer: order.customer,
+        customer: { ...order.customer, lastModified: null },
         customerDelivery: order.customerDelivery,
         branch: order.branch,
         deliveryAmount: order.deliveryAmount,

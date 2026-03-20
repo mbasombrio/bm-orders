@@ -3,35 +3,36 @@ import { User } from './user';
 
 export const ivaSituationConsumidorFinal = 'CONSUMIDOR_FINAL';
 export class Customer {
-	id?: number | null;
-	dni?: string | null;
-	name?: string | null;
-	lastName?: string | null;
-	email?: string | null;
-	cellphone?: string | null;
-	address?: string | null;
-	zipCode?: string | null;
-	city?: string | null;
-	checkingAccountEnabled?: boolean | null;
-	password?: string | null;
-	totalRewardPoints?: number | null;
-	listPrice?: number | null;
-	user?: User;
-	alternativePhone?: string | null;
-	district?: string | null;
-	state?: string | null;
-	preferedContactTime?: string | null;
-	enabled?: boolean;
-	branch?: Branch;
-	saldoFavor?: number;
-	userName?: string | null;
-	observation?: string | null;
-	birthdayDate?: Date | null;
-	ivaSituation?: string | null;
-  status: string | null;
-	ctaCteLimitAmount: number | null;
-	customerType?: string | null;
 
+  id?: number;
+  dni?: string;
+  name?: string;
+  lastName?: string;
+  email?: string;
+  cellphone?: string;
+  address?: string;
+  zipCode?: string;
+  city?: string;
+  checkingAccountEnabled?: boolean;
+  password?: string;
+  totalRewardPoints?: number;
+  listPrice?: number;
+  user?: User;
+  alternativePhone?: string;
+  district?: string;
+  state?: string;
+  preferedContactTime?: string;
+  enabled?: boolean;
+  branch?: Branch;
+  saldoFavor?: number;
+  userName?: string | null;
+  observation?: string | null;
+  birthdayDate?: Date | null;
+  ivaSituation?: string | null;
+  status: string | null;
+  ctaCteLimitAmount: number | null;
+  customerType?: string | null;
+  lastModified?: Date | null;
 
 	constructor() {
 		this.id = null;
@@ -62,25 +63,26 @@ export class Customer {
     this.status = null;
 		this.ctaCteLimitAmount = null;
 		this.customerType = null;
+    this.lastModified = null;
 	}
 }
 
 export class CustomerFilter {
-	public name: string;
-	public lastname: string;
-	public dni: string;
-	public checking_account_enable: boolean;
-	public onlyenabled: boolean;
-	public birth_month: string;
+  public name: string;
+  public lastname: string;
+  public dni: string;
+  public checking_account_enable: boolean;
+  public onlyenabled: boolean;
+  public birth_month: string;
   public page: number;
 
-	constructor() {
-		this.name = '';
-		this.lastname = '';
-		this.dni = '';
-		this.checking_account_enable = false;
-		this.onlyenabled = true;
-		this.birth_month = 'TODOS';
+  constructor() {
+    this.name = '';
+    this.lastname = '';
+    this.dni = '';
+    this.checking_account_enable = false;
+    this.onlyenabled = true;
+    this.birth_month = 'TODOS';
     this.page = 1;
-	}
+  }
 }
