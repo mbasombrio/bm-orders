@@ -50,6 +50,7 @@
         </span>
       </div>
     } @else {
+      <!-- Mobile: Cards -->
       <div class="customer-list">
         @for (customer of filteredCustomers; track customer.id) {
           <div class="customer-card" (click)="editCustomer(customer)">
@@ -72,31 +73,68 @@
               </button>
             </div>
 
-            @if (customer.cellphone || customer.email || customer.address) {
-              <div class="customer-details">
-                @if (customer.cellphone) {
-                  <span class="detail-chip">
-                    <ion-icon name="call-outline"></ion-icon>
-                    {{ customer.cellphone }}
-                  </span>
-                }
-                @if (customer.email) {
-                  <span class="detail-chip">
-                    <ion-icon name="mail-outline"></ion-icon>
-                    {{ customer.email }}
-                  </span>
-                }
-                @if (customer.address) {
-                  <span class="detail-chip detail-chip--address">
-                    <ion-icon name="location-outline"></ion-icon>
-                    {{ customer.address }}{{ customer.city ? ', ' + customer.city : '' }}
-                  </span>
-                }
-              </div>
-            }
+            <div class="customer-details">
+              <span class="detail-chip" [class.detail-chip--empty]="!customer.email">
+                <ion-icon name="mail-outline"></ion-icon>
+                {{ customer.email || 'Sin email' }}
+              </span>
+              <span class="detail-chip" [class.detail-chip--empty]="!customer.cellphone">
+                <ion-icon name="call-outline"></ion-icon>
+                {{ customer.cellphone || 'Sin teléfono' }}
+              </span>
+              <span class="detail-chip detail-chip--address" [class.detail-chip--empty]="!customer.address">
+                <ion-icon name="location-outline"></ion-icon>
+                {{ customer.address ? customer.address + (customer.city ? ', ' + customer.city : '') : 'Sin dirección' }}
+              </span>
+            </div>
 
           </div>
         }
+      </div>
+
+      <!-- Desktop: Table -->
+      <div class="customer-table-wrap">
+        <table class="customer-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>DNI</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>Dirección</th>
+              <th>Tipo</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (customer of filteredCustomers; track customer.id) {
+              <tr (click)="editCustomer(customer)">
+                <td>
+                  <div class="table-customer">
+                    <div class="customer-avatar customer-avatar--sm">{{ getInitials(customer) }}</div>
+                    <span class="customer-name">{{ getFullName(customer) }}</span>
+                  </div>
+                </td>
+                <td class="td-mono">{{ customer.dni || '—' }}</td>
+                <td [class.td-empty]="!customer.email">{{ customer.email || 'Sin email' }}</td>
+                <td [class.td-empty]="!customer.cellphone">{{ customer.cellphone || 'Sin teléfono' }}</td>
+                <td [class.td-empty]="!customer.address">{{ customer.address ? customer.address + (customer.city ? ', ' + customer.city : '') : 'Sin dirección' }}</td>
+                <td>
+                  @if (customer.customerType) {
+                    <span class="type-badge type-badge--{{ customer.customerType.toLowerCase() }}">
+                      {{ customer.customerType }}
+                    </span>
+                  }
+                </td>
+                <td>
+                  <button class="delete-btn" (click)="onDeleteClick($event, customer)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
     }
   }

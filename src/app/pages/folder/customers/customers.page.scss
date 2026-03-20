@@ -213,6 +213,112 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  &.detail-chip--empty {
+    color: rgba(0, 0, 0, 0.2);
+    font-style: italic;
+
+    ion-icon {
+      color: rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+// ─── Responsive: show cards on mobile, table on desktop ─────────
+.customer-table-wrap {
+  display: none;
+}
+
+@media (min-width: 901px) {
+  .customer-list {
+    display: none !important;
+  }
+
+  .customer-table-wrap {
+    display: block;
+    margin: 8px 16px 96px;
+    background: var(--surface);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+}
+
+// ─── Table ──────────────────────────────────────────────────────
+.customer-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+
+  thead {
+    background: var(--brand);
+
+    th {
+      padding: 12px 14px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.85);
+      text-align: left;
+      white-space: nowrap;
+
+      &:last-child {
+        width: 48px;
+      }
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border-dark);
+    cursor: pointer;
+    transition: background 0.12s;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: var(--brand-light);
+    }
+  }
+
+  td {
+    padding: 10px 14px;
+    color: var(--ink-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .td-mono {
+    font-family: ui-monospace, 'SF Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--ink-3);
+  }
+
+  .td-empty {
+    color: rgba(0, 0, 0, 0.2);
+    font-style: italic;
+  }
+}
+
+.table-customer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .customer-name {
+    font-weight: 600;
+    color: var(--ink-1);
+  }
+}
+
+.customer-avatar--sm {
+  width: 32px;
+  height: 32px;
+  font-size: 0.72rem;
 }
 
 // ─── FAB ─────────────────────────────────────────────────────────
