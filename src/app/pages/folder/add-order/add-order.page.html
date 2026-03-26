@@ -67,9 +67,13 @@
   <div class="search-card">
     <ion-searchbar #articleSearchbar [(ngModel)]="searchQuery" placeholder="SKU o nombre del artículo"
       (keyup.enter)="searchArticles()" class="article-searchbar"></ion-searchbar>
-    <ion-button expand="block" (click)="searchArticles()" class="search-action-btn">
-      <ion-icon name="search-outline" slot="start"></ion-icon>
-      Buscar artículo
+    <ion-button expand="block" (click)="searchArticles()" class="search-action-btn" [disabled]="isSearching">
+      @if (isSearching) {
+        <ion-spinner name="crescent"></ion-spinner>
+      } @else {
+        <ion-icon name="search-outline" slot="start"></ion-icon>
+        Buscar artículo
+      }
     </ion-button>
   </div>
 
