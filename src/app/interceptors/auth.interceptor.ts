@@ -1,11 +1,17 @@
-import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { from, switchMap } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { from, switchMap, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { AuthService } from '../services/auth.service';
+import { AuthStateService } from '../services/auth-state.service';
 import { StorageService } from '../services/storage.service';
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const storage = inject(StorageService);
+  const authService = inject(AuthService);
+  const authStateService = inject(AuthStateService);
+  const router = inject(Router);
 
   return from(
     Promise.all([
@@ -50,6 +56,15 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
             }
           }
           return event;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            authService.logout().then(() => {
+              authStateService.clearAuth();
+              router.navigate(['/login']);
+            });
+          }
+          return throwError(() => error);
         })
       );
     })
