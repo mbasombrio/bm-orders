@@ -90,53 +90,33 @@ ion-action-sheet::part(title) {
 
 // ─── BM Toast ─────────────────────────────────────────────────────
 ion-toast.bm-toast {
-  --background: transparent;
-  --box-shadow: none;
+  --background: #ffffff;
+  --box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
   --border-radius: 999px;
-
-  &::part(container) {
-    background: #ffffff;
-    border-radius: 999px;
-    padding: 8px 18px 8px 8px;
-    gap: 0;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
-    animation: bmToastIn 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  &::part(icon) {
-    border-radius: 50%;
-    width: 34px;
-    height: 34px;
-    min-width: 34px;
-    font-size: 18px;
-    --color: #ffffff;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 12px;
-    flex-shrink: 0;
-  }
-
-  &::part(message) {
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: #1a2535;
-    padding: 0;
-  }
+  --color: #1a2535;
+  --max-width: fit-content;
+  --min-height: auto;
 }
 
-ion-toast.bm-toast-success::part(container) { border: 2px solid #22a86b; }
-ion-toast.bm-toast-error::part(container)   { border: 2px solid #e53935; }
-ion-toast.bm-toast-warning::part(container) { border: 2px solid #f59e0b; }
+ion-toast.bm-toast-success {
+  --background: #ffffff;
+  --border-color: #22a86b;
+  --border-width: 2px;
+  --border-style: solid;
+}
 
-ion-toast.bm-toast-success::part(icon) { background: #22a86b; }
-ion-toast.bm-toast-error::part(icon)   { background: #e53935; }
-ion-toast.bm-toast-warning::part(icon) { background: #f59e0b; }
+ion-toast.bm-toast-error {
+  --background: #ffffff;
+  --border-color: #e53935;
+  --border-width: 2px;
+  --border-style: solid;
+}
 
-@keyframes bmToastIn {
-  from { opacity: 0; transform: translateY(12px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+ion-toast.bm-toast-warning {
+  --background: #ffffff;
+  --border-color: #f59e0b;
+  --border-width: 2px;
+  --border-style: solid;
 }
 
 ion-toolbar {
