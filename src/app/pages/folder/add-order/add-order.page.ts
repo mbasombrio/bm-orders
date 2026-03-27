@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
-import { IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonSearchbar, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonSearchbar, IonSelect, IonSelectOption, IonSpinner, IonTextarea, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { bagOutline, chevronForwardOutline, eyeOutline, searchOutline, trash } from 'ionicons/icons';
 import { Article } from 'src/app/models/article';
@@ -46,7 +46,8 @@ import { CustomerSelectionModalComponent } from './customer-selection-modal.comp
     IonItemOptions,
     IonItemOption,
     IonTextarea,
-    IonFooter
+    IonFooter,
+    IonSpinner
   ],
   providers: [ModalController]
 })
@@ -62,6 +63,7 @@ export class AddOrderPage implements OnInit {
   priceLists = [1, 2, 3, 4, 5];
   selectedPriceList: number = 1;
   searchQuery: string = '';
+  isSearching = false;
   orderItems: { article: Article, quantity: number, unitPrice: number }[] = [];
   totalAmount: number = 0;
   orderToEdit: BasketOrder | null = null;
@@ -128,23 +130,37 @@ export class AddOrderPage implements OnInit {
   }
 
   async searchArticles() {
+    if (this.isSearching) return;
+
     if (!this.selectedBranchId) {
       this.presentAlert('Sucursal requerida', 'Debe seleccionar una sucursal antes de buscar artículos.');
       return;
     }
 
-    if (!this.searchQuery.trim()) {
-      return;
-    }
+    this.isSearching = true;
 
-    const results = await this.sqliteArticlesService.searchArticles(this.searchQuery);
+    const query = this.searchQuery.trim().toLowerCase();
+    const results = (query
+      ? await this.sqliteArticlesService.searchArticles(this.searchQuery)
+      : await this.sqliteArticlesService.getArticles()
+    ).sort((a, b) => {
+      if (query) {
+        const aStarts = a.name.toLowerCase().startsWith(query);
+        const bStarts = b.name.toLowerCase().startsWith(query);
+        if (aStarts !== bStarts) return aStarts ? -1 : 1;
+      }
+      return a.name.localeCompare(b.name);
+    });
 
     if (results.length === 0) {
       this.presentAlert('No encontrado', 'No se encontraron artículos con el término de búsqueda.');
+      this.isSearching = false;
     } else if (results.length === 1) {
       this.promptForQuantity(results[0]);
+      this.isSearching = false;
     } else {
-      this.presentArticleSelectionModal(results);
+      await this.presentArticleSelectionModal(results);
+      this.isSearching = false;
     }
   }
 
