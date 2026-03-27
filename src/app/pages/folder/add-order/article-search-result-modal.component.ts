@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, QueryList, ViewChildren } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { IonButton, IonButtons, IonContent, IonHeader, IonItem, IonLabel, IonList, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Article } from 'src/app/models/article';
@@ -15,6 +15,7 @@ export class ArticleSearchResultModalComponent {
 
   @Input() articles: Article[] = [];
   @Input() priceList: number = 1;
+  @ViewChildren('articleItem', { read: ElementRef }) articleItems!: QueryList<ElementRef>;
   selectedIndex: number = 0;
 
   constructor(private modalController: ModalController) { }
@@ -24,9 +25,11 @@ export class ArticleSearchResultModalComponent {
     if (event.key === 'ArrowDown') {
       event.preventDefault();
       this.selectedIndex = Math.min(this.selectedIndex + 1, this.articles.length - 1);
+      this.scrollToSelected();
     } else if (event.key === 'ArrowUp') {
       event.preventDefault();
       this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
+      this.scrollToSelected();
     } else if (event.key === 'Enter') {
       event.preventDefault();
       if (this.articles[this.selectedIndex]) {
@@ -58,5 +61,12 @@ export class ArticleSearchResultModalComponent {
 
   selectArticle(article: Article) {
     this.modalController.dismiss(article);
+  }
+
+  private scrollToSelected() {
+    const items = this.articleItems?.toArray();
+    if (items?.[this.selectedIndex]) {
+      items[this.selectedIndex].nativeElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
   }
 }
